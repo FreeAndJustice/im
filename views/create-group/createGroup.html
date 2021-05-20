@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<style>
+			#selectedImg img{
+				width: 30px;
+				height: 30px;
+				border-radius: 50%;
+				margin: 1px;
+				margin-top: 5px;
+			}
+			.noSelected {
+				width: 100%;
+				margin-left: 20px;
+				font-size: 18px;
+				color: #8b8b8b;
+				line-height: 40px;
+			}
+			.checkbox{
+				margin-top: 10px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">创建群聊</h1>
+			<a id="submitCreateGroup" class="mui-btn mui-btn-link mui-pull-right mui-btn-blue">完成</a>
+		</header>
+		<div class="mui-content">
+			<div class="mui-input-row mui-text" style="margin-top: 10px;">
+				<input id="groupName" type="text" class="mui-input-text" placeholder="群聊名称">
+			</div>
+			<div class="mui-indexed-list-search mui-input-row mui-search">
+				<input id="search" type="search" class="mui-input-clear mui-indexed-list-search-input" placeholder="搜索好友">
+			</div>
+
+			<div id="selectedImg" class="mui-slider mui-fullscreen" style="margin-top: 110px;background-color: #fff;height: 40px;">
+				<div id="sliderSegmentedControl" class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+					<div id="selectedImg" class="mui-scroll">
+						<div class="noSelected">选择用户</div>
+						<!-- <img src="../../images/cbd.jpg" />
+						<img src="../../images/cbd.jpg" />
+						<img src="../../images/cbd.jpg" />
+						<img src="../../images/cbd.jpg" />
+						<img src="../../images/cbd.jpg" />
+						<img src="../../images/cbd.jpg" />
+						<img src="../../images/cbd.jpg" />
+						<img src="../../images/cbd.jpg" />
+						<img src="../../images/cbd.jpg" />
+						<img src="../../images/cbd.jpg" />
+						<img src="../../images/cbd.jpg" />
+						<img src="../../images/cbd.jpg" /> -->
+					</div>
+				</div>
+			</div>
+
+			<div class="mui-scroll-wrapper" style="margin-top: 200px;padding: 0;">
+				<div class="mui-scroll">
+					<ul id="showUsers" class="mui-table-view">
+						<!-- <li class="mui-table-view-cell mui-indexed-list-item mui-checkbox mui-left">
+							<input class="checkbox" type="checkbox" />
+							<img class="mui-media-object mui-pull-left" src="../../images/shuijiao.jpg">
+							<div class="mui-media-body">
+								幸福
+								<p class='mui-ellipsis'>能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</p>
+							</div>
+						</li>
+ -->
+					</ul>
+				</div>
+			</div>
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/APP.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			mui.init();
+			mui('.mui-scroll-wrapper').scroll({
+				bounce: false,
+			});
+			mui.plusReady(function() {
+				var selectedUsers = [];
+				showUsers();
+				
+				mui("#search")[0].addEventListener('input', function(event) {
+					var keys = this.value;
+					if(keys == ""){
+						return;
+					}
+					mui.ajax(APP.serverURL + "/friends/searchMyFriends", {
+						data: {
+							myAccount : APP.getUserInfo().account,
+							keys : keys
+						},
+						dataType: 'json', //服务器返回json格式数据
+						type: 'get', //HTTP请求类型
+						async: true,
+						success: function(data) {
+							var res = data.extend.data;
+							var str = "";
+							mui.each(res, function(index, item) {
+								str +=
+									`
+									<li class="mui-table-view-cell mui-indexed-list-item mui-checkbox mui-left">
+										<input name="users" id-img="` +
+									(APP.imageURL + "/userImage/" + item.myFriends.userImage) + `" value="` + (item.myFriends.account) +
+									`" class="checkbox" type="checkbox" />
+										<img class="mui-media-object mui-pull-left" src="` + (
+										APP.imageURL + "/userImage/" + item.myFriends.userImage) +
+									`">
+										<div class="mui-media-body">
+											` + (item.myFriends.userName) +
+									`
+											<p class='mui-ellipsis'>账号:` + (item.myFriends.account) +
+									`</p>
+										</div>
+									</li>
+								`;
+							});
+							mui("#showUsers")[0].innerHTML = str;
+							mui("#showUsers").on('tap', '.checkbox', function() {
+								var self = this;
+								if (!self.checked) {
+									if(userIsGroup(self.value)){
+										self.checked = true;
+										mui.toast("该用户已在去群聊中");
+										return;
+									}
+									var user = {
+										account: self.value,
+										image: self.getAttribute("id-img")
+									}
+									selectedUsers.push(user);
+									showSelectedImg();
+								} else {
+									mui.each(selectedUsers, function(index, item) {
+										if (item.account == self.value) {
+											selectedUsers.splice(index,1);
+											showSelectedImg();
+											return;
+										}
+									});
+								}
+							});
+						},
+						error: function(e) {
+							mui.alert("网络错误，请重试");
+						}
+					});
+				});
+
+				//显示用户
+				function showUsers() {
+					mui.ajax(APP.serverURL + "/friends/getFriend/" + APP.getUserInfo().account, {
+						data: {
+
+						},
+						dataType: 'json', //服务器返回json格式数据
+						type: 'get', //HTTP请求类型
+						async: false,
+						success: function(data) {
+							var res = data.extend.data;
+							var str = "";
+							mui.each(res, function(index, item) {
+								str +=
+									`
+									<li class="mui-table-view-cell mui-indexed-list-item mui-checkbox mui-left">
+										<input name="users" id-img="` +
+									(APP.imageURL + "/userImage/" + item.myFriends.userImage) + `" value="` + (item.myFriends.account) +
+									`" class="checkbox" type="checkbox" />
+										<img class="mui-media-object mui-pull-left" src="` + (
+										APP.imageURL + "/userImage/" + item.myFriends.userImage) +
+									`">
+										<div class="mui-media-body">
+											` + (item.myFriends.userName) +
+									`
+											<p class='mui-ellipsis'>账号:` + (item.myFriends.account) +
+									`</p>
+										</div>
+									</li>
+								`;
+							});
+							mui("#showUsers")[0].innerHTML = str;
+							mui("#showUsers").on('tap', '.checkbox', function() {
+								var self = this;
+								if (!self.checked) {
+									var user = {
+										account: self.value,
+										image: self.getAttribute("id-img")
+									}
+									selectedUsers.push(user);
+									showSelectedImg();
+								} else {
+									mui.each(selectedUsers, function(index, item) {
+										if (item.account == self.value) {
+											selectedUsers.splice(index,1);
+											showSelectedImg();
+											return;
+										}
+									});
+								}
+							});
+						},
+						error: function(e) {
+							mui.alert("网络错误，请重试");
+						}
+					});
+				}
+				
+				//显示当前选择的用户头像
+				function showSelectedImg() {
+					var str = "";
+					if (selectedUsers.length == 0) {
+						str = `
+							<div class="noSelected">选择用户</div>
+						`;
+					} else {
+						mui.each(selectedUsers, function(index, item) {
+							str += `
+								<img src="` + (item.image) + `" />
+							`;
+						});
+					}
+					mui("#selectedImg")[0].innerHTML = str;
+				}
+				
+				mui("#submitCreateGroup")[0].addEventListener('tap', function() {
+					var groupName = mui("#groupName")[0].value;
+					if(groupName == ""){
+						mui.alert("群名称不能为空");
+						return;
+					}
+					var wt = plus.nativeUI.showWaiting("正在处理...", {loading:{display:"inline"}});
+					var users = "";
+					if(selectedUsers.length != 0){
+						mui.each(selectedUsers, function(index, item) {
+							users += item.account + ",";
+						});
+						users = users.substring(0,users.length-1);
+					}
+					mui.ajax(APP.serverURL + "/group/createGroup",{
+						data:{
+							account : APP.getUserInfo().account,
+							groupName : groupName,
+							users : users
+						},
+						dataType:'json',//服务器返回json格式数据
+						type:'post',//HTTP请求类型
+						success:function(data){
+							mui.toast(data.msg);
+							wt.close();
+							var obj = plus.webview.getWebviewById("contacts.html");
+							obj.evalJS('CONTACTS.showMyGroups()');
+							mui.back();
+						},
+						error:function(e){
+							wt.close();
+							mui.alert("网络错误，请重试");
+						}
+					});
+				});
+			});
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../css/mui.min.css">
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">添加好友/群</h1>
+		</header>
+		<div class="mui-content">
+			<div id="slider" class="mui-slider mui-fullscreen" style="margin-top: 0px;height: 50px;">
+				<div id="sliderSegmentedControl" class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+					<a class="mui-control-item" href="#item1mobile">
+						好友
+					</a>
+					<a class="mui-control-item" href="#item2mobile">
+						群聊
+					</a>
+				</div>
+				<div id="sliderProgressBar" class="mui-slider-progress-bar mui-col-xs-6"></div>
+				<div class="mui-slider-group">
+					<div id="item1mobile" class="mui-slider-item mui-control-content mui-active">
+					</div>
+					<div id="item2mobile" class="mui-slider-item mui-control-content">
+					</div>
+					
+				</div>
+			</div>
+			<div class="mui-content-padded" style="margin: 5px;margin-top: 50px;">
+				<div class="mui-input-row mui-search">
+					<input id="search" type="search" class="mui-input-clear" placeholder="">
+				</div>
+			</div>
+			<ul class="mui-table-view">
+			    <li id="scanIDCard" class="mui-table-view-cell mui-media">
+			    	<img class="mui-media-object mui-pull-left" src="../../icon/scan.png" style="max-height: 24px;max-width: 24px;">
+			        <p class='mui-ellipsis'>
+			        	<span style="line-height: 25px;color: black;font-size: 16px;margin-left: 5px;">
+							扫名片添加
+						</span>
+			        </p>
+			    </li> 
+				<li id="forum" class="mui-table-view-cell mui-media">
+					<img class="mui-media-object mui-pull-left" src="../../icon/location.png" style="max-height: 24px;max-width: 24px;">
+				    <p class='mui-ellipsis'>
+				    	<span style="line-height: 25px;color: black;font-size: 16px;margin-left: 5px;">
+							附近的人
+						</span>
+				    </p>
+				</li>
+				<li id="forum" class="mui-table-view-cell mui-media">
+					<img class="mui-media-object mui-pull-left" src="../../icon/search.png" style="max-height: 24px;max-width: 24px;">
+				    <p class='mui-ellipsis'>
+				    	<span style="line-height: 25px;color: black;font-size: 16px;margin-left: 5px;">
+							按条件查询
+						</span>
+				    </p>
+				</li>
+			</ul>
+		</div>
+	</body>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/APP.js"></script>
+	<script type="text/javascript" src="../../js/common.js"></script>
+	<script>
+		mui.init({
+			swipeBack:true //启用右滑关闭功能
+		});
+		window.addEventListener('qr', function(e) {
+			//获取参数值
+			var result = e.detail.result;
+			mui.openWindow({url:'../qr/qrDetails.html',
+				id : "qrDetails",
+				extras:{
+					result : result,
+				},
+			});
+		});
+		mui.plusReady(function () {
+			var addType = 0;//默认为添加好友,加群是1
+		    mui("#slider")[0].addEventListener('slide', function(e) {
+				addType = e.detail.slideNumber;
+			});
+			mui("#scanIDCard")[0].addEventListener('tap',function(){
+				createWithoutTitle('../qr/barcode_scan.html', {
+					titleNView: {
+						type: 'float',
+						backgroundColor: 'rgba(215,75,40,0.3)',
+						titleText: '扫一扫',
+						titleColor: '#FFFFFF',
+						autoBackButton: true,
+						buttons: [{
+							fontSrc: '_www/helloh5.ttf',
+							text: '相册',
+							fontSize: '16px',
+							onclick: 'javascript:scanPicture()'
+						}]
+					}
+				});
+			});
+			mui("#search")[0].addEventListener('keyup', function(event) {
+				if (event.keyCode == "13") {
+					var keys = this.value;
+					if(keys == ""){
+						mui.alert("搜索内容不能为空");
+						return;
+					}
+					mui.openWindow({url:'searchResult.html',
+						id : "searchResult",
+						extras:{
+							keys : keys,
+							addType : addType
+						}
+					});
+				}
+			});
+		});
+	</script> 
+</html>

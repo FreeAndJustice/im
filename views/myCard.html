@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link rel="stylesheet" href="../css/mui.min.css">
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">我的名片</h1>
+		</header>
+		<div class="mui-content" id="myCard">
+
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/APP.js"></script>
+		<script>
+			mui.plusReady(function() {
+				var wt = plus.nativeUI.showWaiting("正在加载...", {loading:{display:"inline"}});
+				mui.ajax(APP.serverURL + "/qr/createQR", {
+					data: {
+						imageName : APP.getUserInfo().userImage,
+						account:  APP.getUserInfo().account,
+						name: APP.getUserInfo().userName
+					},
+					dataType: 'json', //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					success: function(data) {
+						var res = data.extend.data;
+						if(res.flag){
+							var str = `
+								<div class="mui-card">
+									<div class="mui-card-header mui-card-media">
+										<img src="`+(APP.imageURL+"/userImage/"+APP.getUserInfo().userImage)+`" />
+										<div class="mui-media-body">
+											`+(APP.getUserInfo().userName)+`
+											<p>`+(APP.getUserInfo().account)+`</p>
+										</div>
+									</div>
+									<div class="mui-card-content">
+										<img src="`+(APP.imageURL+"/userImage/"+res.fileName)+`" alt="" width="100%" />
+									</div>
+									<div class="mui-card-footer">
+										<a class="mui-card-link"></a>
+										<a class="mui-card-link">扫一扫添加好友</a>
+										<a class="mui-card-link"></a>
+									</div>
+								</div>
+							`;
+							mui("#myCard")[0].innerHTML = str;
+						}else{
+							mui.toast("加载出错，请重试");
+						}
+						wt.close();
+					},
+					error: function(e) {
+						wt.close();
+						mui.alert("网络错误，请重试");
+					}
+				});
+			});
+		</script>
+	</body>
+
+</html>

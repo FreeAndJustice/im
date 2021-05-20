@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link href="../css/mui.picker.css" rel="stylesheet" />
+		<link href="../css/mui.poppicker.css" rel="stylesheet" />
+		<style>
+			html,
+			body {
+				background-color: #efeff4;
+			}
+
+			.mui-views,
+			.mui-view,
+			.mui-pages,
+			.mui-page,
+			.mui-page-content {
+				position: absolute;
+				left: 0;
+				right: 0;
+				top: 0;
+				bottom: 0;
+				width: 100%;
+				height: 100%;
+				background-color: #efeff4;
+			}
+
+			.mui-pages {
+				top: 46px;
+				height: auto;
+			}
+
+			.mui-scroll-wrapper,
+			.mui-scroll {
+				background-color: #efeff4;
+			}
+
+			.mui-page.mui-transitioning {
+				-webkit-transition: -webkit-transform 300ms ease;
+				transition: transform 300ms ease;
+			}
+
+			.mui-page-left {
+				-webkit-transform: translate3d(0, 0, 0);
+				transform: translate3d(0, 0, 0);
+			}
+
+			.mui-ios .mui-page-left {
+				-webkit-transform: translate3d(-20%, 0, 0);
+				transform: translate3d(-20%, 0, 0);
+			}
+
+			.mui-navbar {
+				position: fixed;
+				right: 0;
+				left: 0;
+				z-index: 10;
+				height: 44px;
+				background-color: #f7f7f8;
+			}
+
+			.mui-navbar .mui-bar {
+				position: absolute;
+				background: transparent;
+				text-align: center;
+			}
+
+			.mui-android .mui-navbar-inner.mui-navbar-left {
+				opacity: 0;
+			}
+
+			.mui-ios .mui-navbar-left .mui-left,
+			.mui-ios .mui-navbar-left .mui-center,
+			.mui-ios .mui-navbar-left .mui-right {
+				opacity: 0;
+			}
+
+			.mui-navbar .mui-btn-nav {
+				-webkit-transition: none;
+				transition: none;
+				-webkit-transition-duration: .0s;
+				transition-duration: .0s;
+			}
+
+			.mui-navbar .mui-bar .mui-title {
+				display: inline-block;
+				width: auto;
+			}
+
+			.mui-page-shadow {
+				position: absolute;
+				right: 100%;
+				top: 0;
+				width: 16px;
+				height: 100%;
+				z-index: -1;
+				content: '';
+			}
+
+			.mui-page-shadow {
+				background: -webkit-linear-gradient(left, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, .01) 50%, rgba(0, 0, 0, .2) 100%);
+				background: linear-gradient(to right, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, .01) 50%, rgba(0, 0, 0, .2) 100%);
+			}
+
+			.mui-navbar-inner.mui-transitioning,
+			.mui-navbar-inner .mui-transitioning {
+				-webkit-transition: opacity 300ms ease, -webkit-transform 300ms ease;
+				transition: opacity 300ms ease, transform 300ms ease;
+			}
+
+			.mui-page {
+				display: none;
+			}
+
+			.mui-pages .mui-page {
+				display: block;
+			}
+
+			.mui-page .mui-table-view:first-child {
+				margin-top: 15px;
+			}
+
+			.mui-page .mui-table-view:last-child {
+				margin-bottom: 30px;
+			}
+
+			.mui-table-view {
+				margin-top: 20px;
+			}
+
+			.mui-table-view span.mui-pull-right {
+				color: #999;
+			}
+
+			.mui-table-view-divider {
+				background-color: #efeff4;
+				font-size: 14px;
+			}
+
+			.mui-table-view-divider:before,
+			.mui-table-view-divider:after {
+				height: 0;
+			}
+
+			.head {
+				height: 40px;
+			}
+
+			#head {
+				line-height: 40px;
+			}
+
+			.head-img {
+				width: 40px;
+				height: 40px;
+			}
+
+			#head-img1 {
+				position: absolute;
+				bottom: 10px;
+				right: 40px;
+				width: 40px;
+				height: 40px;
+			}
+
+			.update {
+				font-style: normal;
+				color: #999999;
+				margin-right: -25px;
+				font-size: 15px
+			}
+
+			.mui-fullscreen {
+				position: fixed;
+				z-index: 20;
+				background-color: #000;
+			}
+
+			.mui-ios .mui-navbar .mui-bar .mui-title {
+				position: static;
+			}
+
+			/*问题反馈在setting页面单独的css*/
+			#feedback .mui-popover {
+				position: fixed;
+			}
+
+			#feedback .mui-table-view:last-child {
+				margin-bottom: 0px;
+			}
+
+			#feedback .mui-table-view:first-child {
+				margin-top: 0px;
+			}
+
+			.mui-plus.mui-plus-stream .mui-stream-hidden {
+				display: none !important;
+			}
+
+			/*问题反馈在setting页面单独的css==end*/
+		</style>
+		<link rel="stylesheet" type="text/css" href="../css/feedback.css" />
+	</head>
+
+	<body class="mui-fullscreen">
+		<!--页面主结构开始-->
+		<div id="app" class="mui-views">
+			<div class="mui-view">
+				<div class="mui-navbar">
+				</div>
+				<div class="mui-pages">
+				</div>
+			</div>
+		</div>
+		<!--页面主结构结束-->
+		<!--单页面开始-->
+		<div id="setting" class="mui-page">
+			<!--页面标题栏开始-->
+			<div class="mui-navbar-inner mui-bar mui-bar-nav">
+				<button type="button" class="mui-left mui-action-back mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+					<span class="mui-icon mui-icon-left-nav"></span>
+				</button>
+				<h1 class="mui-center mui-title">设置</h1>
+			</div>
+			<!--页面标题栏结束-->
+			<!--页面主内容区开始-->
+			<div class="mui-page-content">
+				<div class="mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<ul class="mui-table-view mui-table-view-chevron">
+							<li class="mui-table-view-cell mui-media">
+								<a class="mui-navigate-right" href="#account">
+									<img class="mui-media-object mui-pull-left" id="setting_userImage" src="">
+									<div class="mui-media-body">
+										<span id="setting_userName">--</span>
+										<p class='mui-ellipsis'>账号:<span id="setting_account">--</span></p>
+									</div>
+								</a>
+							</li>
+						</ul>
+						<ul class="mui-table-view mui-table-view-chevron">
+							<li class="mui-table-view-cell">
+								<a id="myCard" class="mui-navigate-right">我的名片</a>
+							</li>
+						</ul>
+						<ul class="mui-table-view mui-table-view-chevron">
+							<li id="clearMsg" class="mui-table-view-cell">
+								清除聊天记录
+							</li>
+						</ul>
+						<ul class="mui-table-view">
+							<li id="logout" class="mui-table-view-cell" style="text-align: center;">
+								<a>退出登录</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<!--页面主内容区结束-->
+		</div>
+		<!--单页面结束-->
+		<div id="account" class="mui-page">
+			<div class="mui-navbar-inner mui-bar mui-bar-nav">
+				<button type="button" class="mui-left mui-action-back mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+					<span class="mui-icon mui-icon-left-nav"></span>设置
+				</button>
+				<h1 class="mui-center mui-title">修改资料</h1>
+			</div>
+			<div class="mui-page-content">
+				<div class="mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<ul class="mui-table-view">
+							<li class="mui-table-view-cell">
+								<a id="head">头像
+									<span class="mui-pull-right head">
+										<img class="head-img mui-action-preview" id="update_userImage" src="" />
+									</span>
+								</a>
+							</li>
+							<li class="mui-table-view-cell" id="click_userName">
+								<a>用户名<span class="mui-pull-right" id="update_userName">--</span></a>
+							</li>
+							<li class="mui-table-view-cell" id="click_account">
+								<a>账号<span class="mui-pull-right" id="update_account">--</span></a>
+							</li>
+						</ul>
+						<ul class="mui-table-view">
+							<li class="mui-table-view-cell" id="click_userPhone">
+								<a>手机号<span class="mui-pull-right" id="update_userPhone">--</span></a>
+							</li>
+							<li class="mui-table-view-cell" id="click_userEmail">
+								<a>邮箱地址<span class="mui-pull-right" id="update_userEmail">--</span></a>
+							</li>
+						</ul>
+						
+						<ul class="mui-table-view">
+							<li class="mui-table-view-cell" id="click_address">
+								<a>地址<span class="mui-pull-right" id="update_address">--</span></a>
+							</li>
+							<li class="mui-table-view-cell" id="click_location">
+								<a>详细地址<span class="mui-pull-right" id="update_location">--</span></a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="about" class="mui-page">
+			<div class="mui-navbar-inner mui-bar mui-bar-nav">
+				<button type="button" class="mui-left mui-action-back mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+					<span class="mui-icon mui-icon-left-nav"></span>设置
+				</button>
+				<h1 class="mui-center mui-title">关于BlueSeaChat</h1>
+			</div>
+			<div class="mui-page-content">
+				<div class="mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<ul class="mui-table-view">
+							<li class="mui-table-view-cell">
+								<a id="feedback-btn" href="#feedback" class="mui-navigate-right">问题反馈</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src="../js/mui.min.js "></script>
+	<script src="../js/mui.view.js "></script>
+	<script src="../js/APP.js"></script>
+	<script src="../js/mui.picker.js"></script>
+	<script src="../js/mui.poppicker.js"></script>
+	<script src="../js/city.data.js"></script>
+	<script src="../js/city.data-3.js"></script>
+	<script>
+		mui.init();
+		mui.init({
+			beforeback: function() {
+				var list = plus.webview.currentWebview().opener();
+				//refresh是A页面自定义事件
+				mui.fire(list, 'websocket');
+				//返回true,继续页面关闭逻辑
+				return true;
+			}
+		});
+		//初始化单页view
+		var viewApi = mui('#app').view({
+			defaultPage: '#setting'
+		});
+		//初始化单页的区域滚动
+		mui('.mui-scroll-wrapper').scroll();
+		//分享操作
+		var shares = {};
+
+		mui.plusReady(function() {
+			
+			showMyInfo();
+
+			document.getElementById("click_userName").addEventListener('tap', function() {
+				var btnArray = ['取消', '确定'];
+				mui.prompt('输入用户名', APP.getUserInfo().userName, '修改用户名', btnArray, function(e) {
+					if (e.index == 1) {
+						if(e.value == ""){
+							mui.toast("用户名不能为空");
+							return;
+						}
+						mui.ajax(APP.serverURL + "/user/updateUserInfo" , {
+							data: {
+								account : APP.getUserInfo().account,
+								userName: e.value
+							},
+							dataType: 'json', //服务器返回json格式数据
+							type: 'post', //HTTP请求类型
+							success: function(data) {
+								if(data.code == 100){
+									var user = APP.getUserInfo();
+									user.userName = e.value;
+									APP.setUserInfo(user);
+									document.getElementById("setting_userName").innerHTML = user.userName;
+									document.getElementById("update_userName").innerHTML = user.userName;
+								}
+								mui.toast(data.msg);
+							},
+							error: function(e) {
+								mui.alert("网络错误，请重试");
+							}
+						});
+					}
+				})
+			});
+				
+			mui("#myCard")[0].addEventListener('tap', function() {
+				mui.openWindow({url:'myCard.html',
+					id : "myCard",
+					extras:{id:'100'},
+				});
+			});
+			document.getElementById("logout").addEventListener('tap', function() {
+				var btnArray = ['否', '是'];
+				mui.confirm('确认退出当前账号？', '', btnArray, function(e) {
+					if (e.index == 1) {
+						plus.storage.clear();
+						plus.runtime.restart();
+					}
+				})
+			});
+			document.getElementById("clearMsg").addEventListener('tap', function() {
+				var btnArray = ['否', '是'];
+				mui.confirm('确认清空所有聊天记录吗？', '', btnArray, function(e) {
+					var wt = plus.nativeUI.showWaiting("正在清除...", {loading:{display:"inline"}});
+					if (e.index == 1) {
+						mui.init({
+							beforeback: function() {
+								var list = plus.webview.currentWebview().opener();
+								//refresh是A页面自定义事件
+								mui.fire(list, 'chatWin');
+								//返回true,继续页面关闭逻辑
+								return true;
+							}
+						});
+						if(APP.clearAllMsg()){
+							APP.setIsReloadIndex(true);
+							mui.toast("聊天记录已清除");
+						}
+					}
+					wt.close();
+				})
+			});
+			document.getElementById("click_userPhone").addEventListener('tap', function() {
+				var btnArray = ['取消', '确定'];
+				var str = APP.getUserInfo().userPhone;
+				if(str == null || str == ""){
+					str = "--";
+				}
+				mui.prompt('输入电话', str, '修改电话', btnArray, function(e) {
+					if (e.index == 1) {
+						if(e.value == ""){
+							mui.toast("电话不能为空");
+							return;
+						}
+						mui.ajax(APP.serverURL + "/user/updateUserInfo" , {
+							data: {
+								account : APP.getUserInfo().account,
+								userPhone: e.value
+							},
+							dataType: 'json', //服务器返回json格式数据
+							type: 'post', //HTTP请求类型
+							success: function(data) {
+								if(data.code == 100){
+									var user = APP.getUserInfo();
+									user.userPhone = e.value;
+									APP.setUserInfo(user);
+									document.getElementById("update_userPhone").innerHTML = user.userPhone;
+								}
+								mui.toast(data.msg);
+							},
+							error: function(e) {
+								mui.alert("网络错误，请重试");
+							}
+						});
+					}
+				})
+			});
+
+			document.getElementById("click_userEmail").addEventListener('tap', function() {
+				var btnArray = ['取消', '确定'];
+				var str = APP.getUserInfo().userEmail;
+				if(str == null || str == ""){
+					str = "--";
+				}
+				mui.prompt('输入邮箱', str, '修改邮箱', btnArray, function(e) {
+					if (e.index == 1) {
+						if(e.value == ""){
+							mui.toast("邮箱不能为空");
+							return;
+						}
+						mui.ajax(APP.serverURL + "/user/updateUserInfo" , {
+							data: {
+								account : APP.getUserInfo().account,
+								userEmail: e.value
+							},
+							dataType: 'json', //服务器返回json格式数据
+							type: 'post', //HTTP请求类型
+							success: function(data) {
+								if(data.code == 100){
+									var user = APP.getUserInfo();
+									user.userEmail = e.value;
+									APP.setUserInfo(user);
+									document.getElementById("update_userEmail").innerHTML = user.userEmail;
+								}
+								mui.toast(data.msg);
+							},
+							error: function(e) {
+								mui.alert("网络错误，请重试");
+							}
+						});
+					}
+				})
+			});
+			document.getElementById("click_address").addEventListener('tap', function() {
+				(function($, doc) {
+					var _getParam = function(obj, param) {
+						return obj[param] || '';
+					};
+					var cityPicker = new $.PopPicker({
+						layer: 3
+					});
+					cityPicker.setData(cityData3);
+					cityPicker.show(function(items) {
+						var province = items[0]['text'];
+						var city = items[1]['text'];
+						var county = items[2]['text'];
+						
+						if(province == APP.getUserInfo().province && 
+							city == APP.getUserInfo().city && 
+							county == APP.getUserInfo().county){
+							return true;
+						}
+						mui.ajax(APP.serverURL + "/user/updateUserInfo" , {
+							data: {
+								account : APP.getUserInfo().account,
+								province : province,
+								city : city,
+								county : county,
+								location: APP.getUserInfo().location,
+							},
+							dataType: 'json', //服务器返回json格式数据
+							type: 'post', //HTTP请求类型
+							success: function(data) {
+								if(data.code == 100){
+									var user = APP.getUserInfo();
+									user.province = province;
+									user.city = city;
+									user.county = county;
+									APP.setUserInfo(user);
+									document.getElementById("update_address").innerHTML = user.province+"-"+user.city+"-"+user.county;
+								}
+								mui.toast(data.msg);
+							},
+							error: function(e) {
+								mui.alert("网络错误，请重试");
+							}
+						});
+					});
+				})(mui, document);
+			});
+			
+			document.getElementById("click_location").addEventListener('tap', function() {
+				var btnArray = ['取消', '确定'];
+				var str = APP.getUserInfo().location;
+				if(str == null || str == ""){
+					str = "--";
+				}
+				mui.prompt('输入邮箱', str, '修改邮箱', btnArray, function(e) {
+					if (e.index == 1) {
+						if(e.value == ""){
+							mui.toast("邮箱不能为空");
+							return;
+						}
+						if(e.value == APP.getUserInfo().location){
+							return;
+						}
+						mui.ajax(APP.serverURL + "/user/updateUserInfo" , {
+							data: {
+								account : APP.getUserInfo().account,
+								province : APP.getUserInfo().province,
+								city : APP.getUserInfo().city,
+								county : APP.getUserInfo().county,
+								location: e.value
+							},
+							dataType: 'json', //服务器返回json格式数据
+							type: 'post', //HTTP请求类型
+							success: function(data) {
+								if(data.code == 100){
+									var user = APP.getUserInfo();
+									user.location = e.value;
+									APP.setUserInfo(user);
+									document.getElementById("update_location").innerHTML = user.location;
+								}
+								mui.toast(data.msg);
+							},
+							error: function(e) {
+								mui.alert("网络错误，请重试");
+							}
+						});
+					}
+				})
+			});
+
+			document.getElementById("click_account").addEventListener('tap', function() {
+				mui.toast("账号无法修改");
+			});
+			//显示个人信息
+			function showMyInfo() {
+				//设置页
+				document.getElementById("setting_userImage").src = APP.imageURL + "/userImage/" + APP.getUserInfo().userImage;
+				document.getElementById("setting_userName").innerHTML = APP.getUserInfo().userName;
+				document.getElementById("setting_account").innerHTML = APP.getUserInfo().account;
+
+				//修改页
+				document.getElementById("update_userImage").src = APP.imageURL + "/userImage/" + APP.getUserInfo().userImage;
+				document.getElementById("update_userName").innerHTML = APP.getUserInfo().userName;
+				document.getElementById("update_account").innerHTML = APP.getUserInfo().account;
+				if (APP.getUserInfo().userPhone != null && APP.getUserInfo().userPhone != "") {
+					document.getElementById("update_userPhone").innerHTML = APP.getUserInfo().userPhone;
+				}
+				if (APP.getUserInfo().userEmail != null && APP.getUserInfo().userEmail != "") {
+					document.getElementById("update_userEmail").innerHTML = APP.getUserInfo().userEmail;
+				}
+				if(APP.getUserInfo().province != null && APP.getUserInfo().province != ""){
+					var u = APP.getUserInfo();
+					document.getElementById("update_address").innerHTML = u.province + "-" + u.city + "-" + u.county;
+				}
+				if(APP.getUserInfo().location != null && APP.getUserInfo().location != ""){
+					document.getElementById("update_location").innerHTML = APP.getUserInfo().location;
+				}
+			}
+
+			function updateUserImage(userImage) {
+				mui.ajax(APP.serverURL + "/user/updateUserInfo" , {
+					data: {
+						account : APP.getUserInfo().account,
+						userImage: userImage
+					},
+					dataType: 'json', //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					success: function(data) {
+						APP.setIsReloadIndex(true);
+						mui.toast(data.msg);
+					},
+					error: function(e) {
+						mui.alert("网络错误，请重试");
+					}
+				});
+			}
+			mui.init({
+				beforeback: function() {
+					var list = plus.webview.currentWebview().opener();
+					//refresh是A页面自定义事件
+					mui.fire(list, 'myImage');
+					//返回true,继续页面关闭逻辑
+					return true;
+				}
+			});
+
+			setTimeout(function() {
+				setTimeout(function() {
+					initImgPreview();
+				}, 300);
+			}, 500);
+
+			//更换头像
+			mui(".mui-table-view-cell").on("tap", "#head", function(e) {
+				if (mui.os.plus) {
+					var a = [{
+						title: "拍照"
+					}, {
+						title: "从手机相册选择"
+					}];
+					plus.nativeUI.actionSheet({
+						title: "修改头像",
+						cancel: "取消",
+						buttons: a
+					}, function(b) {
+						switch (b.index) {
+							case 0:
+								break;
+							case 1:
+								getImage();
+								break;
+							case 2:
+								galleryImg();
+								break;
+							default:
+								break
+						}
+					})
+				}
+
+			});
+			//相机
+			function getImage() {
+				var c = plus.camera.getCamera();
+				c.captureImage(function(e) {
+					plus.io.resolveLocalFileSystemURL(e, function(entry) {
+						var e = entry.toLocalURL() + "?version=" + new Date().getTime();
+						var wt = plus.nativeUI.showWaiting();
+						var task = plus.uploader.createUpload(APP.serverURL + "/uploadFiles", {
+								method: "POST",
+								priority: 100
+							},
+							function(t, status) {
+								if (APP.analysisUpload(t).flag) {
+									var user = APP.getUserInfo();
+									user.userImage = APP.analysisUpload(t).fileName;
+									APP.setUserInfo(user);
+									updateUserImage(user.userImage);
+									document.getElementById("update_userImage").src = e;
+									//变更大图预览的src
+									//目前仅有一张图片，暂时如此处理，后续需要通过标准组件实现
+									document.querySelector("#__mui-imageview__group .mui-slider-item img").src = e +
+										"?version=" + new Date().getTime();
+								} else {
+									mui.alert("头像上传失败，请重试");
+								}
+								wt.close();
+							}
+						);
+						task.addFile(e, {
+							key: "file"
+						});
+						task.addData("path", "userImage");
+						task.addData("account", APP.getUserInfo().account);
+						task.start();
+					}, function(e) {
+						console.log("读取拍照文件错误：" + e.message);
+					});
+				}, function(s) {
+					console.log("error" + s);
+				}, {
+					filename: "_doc/head.jpg"
+				})
+			}
+
+			//相册
+			function galleryImg() {
+				plus.gallery.pick(function(a) {
+					plus.io.resolveLocalFileSystemURL(a, function(entry) {
+						var e = entry.toLocalURL();
+						var wt = plus.nativeUI.showWaiting();
+						var task = plus.uploader.createUpload(APP.serverURL + "/uploadFiles", {
+								method: "POST",
+								priority: 100
+							},
+							function(t, status) {
+								if (APP.analysisUpload(t).flag) {
+									var user = APP.getUserInfo();
+									user.userImage = APP.analysisUpload(t).fileName;
+									APP.setUserInfo(user);
+									updateUserImage(user.userImage);
+									document.getElementById("update_userImage").src = e;
+									//变更大图预览的src
+									//目前仅有一张图片，暂时如此处理，后续需要通过标准组件实现
+									document.querySelector("#__mui-imageview__group .mui-slider-item img").src = e +
+										"?version=" + new Date().getTime();;
+								} else {
+									mui.alert("头像上传失败，请重试");
+								}
+								wt.close();
+							}
+						);
+						task.addFile(e, {
+							key: "file"
+						});
+						task.addData("path", "userImage");
+						task.addData("account", APP.getUserInfo().account);
+						task.start();
+					}, function(e) {
+						console.log("读取拍照文件错误：" + e.message);
+					});
+				}, function(a) {}, {
+					filter: "image"
+				})
+			};
+
+			document.getElementById("update_userImage").addEventListener('tap', function(e) {
+				e.stopPropagation();
+			});
+			
+			document.getElementById("submit").addEventListener('tap', function(e) {
+				mui.alert("敬请期待...");
+			});
+
+			var view = viewApi.view;
+			(function($) {
+				//处理view的后退与webview后退
+				var oldBack = $.back;
+				$.back = function() {
+					if (viewApi.canBack()) { //如果view可以后退，则执行view的后退
+						viewApi.back();
+					} else { //执行webview后退
+						oldBack();
+					}
+				};
+				//监听页面切换事件方案1,通过view元素监听所有页面切换事件，目前提供pageBeforeShow|pageShow|pageBeforeBack|pageBack四种事件(before事件为动画开始前触发)
+				//第一个参数为事件名称，第二个参数为事件回调，其中e.detail.page为当前页面的html对象
+				view.addEventListener('pageBeforeShow', function(e) {
+					//				console.log(e.detail.page.id + ' beforeShow');
+				});
+				view.addEventListener('pageShow', function(e) {
+					//				console.log(e.detail.page.id + ' show');
+				});
+				view.addEventListener('pageBeforeBack', function(e) {
+					//				console.log(e.detail.page.id + ' beforeBack');
+				});
+				view.addEventListener('pageBack', function(e) {
+					//				console.log(e.detail.page.id + ' back');
+				});
+			})(mui);
+
+			function initImgPreview() {
+				var imgs = document.querySelectorAll("img.mui-action-preview");
+				imgs = mui.slice.call(imgs);
+				if (imgs && imgs.length > 0) {
+					var slider = document.createElement("div");
+					slider.setAttribute("id", "__mui-imageview__");
+					slider.classList.add("mui-slider");
+					slider.classList.add("mui-fullscreen");
+					slider.style.display = "none";
+					slider.addEventListener("tap", function() {
+						slider.style.display = "none";
+					});
+					slider.addEventListener("touchmove", function(event) {
+						event.preventDefault();
+					})
+					var slider_group = document.createElement("div");
+					slider_group.setAttribute("id", "__mui-imageview__group");
+					slider_group.classList.add("mui-slider-group");
+					imgs.forEach(function(value, index, array) {
+						//给图片添加点击事件，触发预览显示；
+						value.addEventListener('tap', function() {
+							slider.style.display = "block";
+							_slider.refresh();
+							_slider.gotoItem(index, 0);
+						})
+						var item = document.createElement("div");
+						item.classList.add("mui-slider-item");
+						var a = document.createElement("a");
+						var img = document.createElement("img");
+						img.setAttribute("src", value.src);
+						a.appendChild(img)
+						item.appendChild(a);
+						slider_group.appendChild(item);
+					});
+					slider.appendChild(slider_group);
+					document.body.appendChild(slider);
+					var _slider = mui(slider).slider();
+				}
+			}
+
+		});
+	</script>
+
+</html>

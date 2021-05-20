@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<style>
+			.title {
+				margin: 20px 15px 10px;
+				color: #6d6d72;
+				font-size: 15px;
+			}
+			.mui-media-body p{
+				width: 80%;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">查找结果</h1>
+		</header>
+		<div class="mui-content">
+			<div class="mui-content-padded" style="margin: 5px;margin-top: 10px;">
+				<div id="searchStyle" class="mui-input-row mui-search">
+					<input id="search" type="search" class="mui-input-clear" placeholder="">
+				</div>
+			</div>
+			<ul id="results" class="mui-table-view">
+				<!-- <li class="mui-table-view-cell mui-media">
+					<a href="javascript:;">
+						<img class="mui-media-object mui-pull-left" src="../../images/shuijiao.jpg">
+						<div class="mui-media-body">
+							幸福
+							<p class='mui-ellipsis'>能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</p>
+						</div>
+						<div class="mui-btn mui-btn-success">
+							添加
+						</div>
+					</a>
+				</li> -->
+				<!-- <li class="mui-table-view-cell mui-media" style="text-align: center;">
+					<a href="javascript:;">
+						<div class="mui-media-body" style="margin-top: 8px;">
+							查找结果为空！
+						</div>
+					</a>
+				</li> -->
+			</ul>
+		</div>
+
+	</body>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/APP.js"></script>
+	<script>
+		mui.init({
+			swipeBack:true //启用右滑关闭功能
+		});
+		
+		mui.plusReady(function () {
+		    var self = plus.webview.currentWebview();
+			if(self.keys != null){
+				var keys = self.keys;
+				mui("#searchStyle")[0].classList.add("mui-active");
+				mui("#search")[0].value = keys;
+				if(self.addType == 0){
+					submitSearch(keys);
+				}else{
+					submitSearchGroup(keys);
+				}
+			}
+			
+			mui("#search")[0].addEventListener('keyup', function(event) {
+				if (event.keyCode == "13") {
+					var keys = this.value;
+					if(keys == ""){
+						mui.alert("搜索内容不能为空");
+						return;
+					}
+					submitSearch(keys);
+				}
+			});
+			
+			//搜索好友
+			function submitSearch(keys){
+				var wt = plus.nativeUI.showWaiting("获取结果中...", {loading:{display:"inline"}});
+				mui.ajax(APP.serverURL + "/user/searchUsers",{
+					data:{
+						keys : keys
+					},
+					dataType:'json',//服务器返回json格式数据
+					type:'get',//HTTP请求类型
+					success:function(data){
+						var users = data.extend.data;
+						if(users.length <= 0){
+							noResults();
+						}else{
+							var str = "";
+							mui.each(users,function(index,item){
+								str += `
+									<li class="mui-table-view-cell mui-media">
+										<a href="javascript:;">
+											<img class="mui-media-object mui-pull-left" src="`+(APP.imageURL+"/userImage/"+item.userImage)+`">
+											<div class="mui-media-body">
+												`+(item.userName)+`
+												<p class='mui-ellipsis'>账号:`+(item.account)+`</p>
+											</div>
+											<div id="`+(item.account)+`" class="mui-btn mui-btn-success accounts">
+												添加
+											</div>
+										</a>
+									</li>
+								`;
+							});
+							mui("#results")[0].innerHTML = str;
+							mui("#results").on('tap', '.accounts', function() {
+								mui.ajax(APP.serverURL + "/msgRecord/addMsgRecord",{
+									data:{
+										fromAccount : APP.getUserInfo().account,
+										toAccount : this.getAttribute("id")
+									},
+									dataType:'json',//服务器返回json格式数据
+									type:'post',//HTTP请求类型
+									success:function(data){
+										mui.toast(data.msg);
+									},
+									error:function(e){
+										mui.alert("网络错误，请重试");
+									}
+								});
+							});
+						}
+						wt.close();
+					},
+					error:function(e){
+						wt.close();
+						mui.alert("网络错误，请重试");
+					}
+				});
+			}
+			//搜索群聊
+			function submitSearchGroup(keys){
+				var wt = plus.nativeUI.showWaiting("获取结果中...", {loading:{display:"inline"}});
+				mui.ajax(APP.serverURL + "/group/searchGroup",{
+					data:{
+						keys : keys
+					},
+					dataType:'json',//服务器返回json格式数据
+					type:'get',//HTTP请求类型
+					success:function(data){
+						var groups = data.extend.data;
+						if(groups.length <= 0){
+							noResults();
+						}else{
+							var str = "";
+							mui.each(groups,function(index,item){
+								str += `
+									<li class="mui-table-view-cell mui-media">
+										<a href="javascript:;">
+											<img class="mui-media-object mui-pull-left" src="`+(APP.imageURL+"/userImage/"+item.groupImage)+`">
+											<div class="mui-media-body">
+												`+(item.groupName)+`(群聊)
+												<p class='mui-ellipsis'>账号:`+(item.groupId)+`</p>
+											</div>
+											<div id="`+(item.groupId)+`" class="mui-btn mui-btn-success groups">
+												加入
+											</div>
+										</a>
+									</li>
+								`;
+							});
+							mui("#results")[0].innerHTML = str;
+							mui("#results").on('tap', '.groups', function() {
+								mui.ajax(APP.serverURL + "/msgRecord/reqAddGroup",{
+									data:{
+										fromAccount : APP.getUserInfo().account,
+										groupId : this.getAttribute("id")
+									},
+									dataType:'json',//服务器返回json格式数据
+									type:'post',//HTTP请求类型
+									success:function(data){
+										mui.toast(data.msg);
+									},
+									error:function(e){
+										mui.alert("网络错误，请重试");
+									}
+								});
+							});
+						}
+						wt.close();
+					},
+					error:function(e){
+						wt.close();
+						mui.alert("网络错误，请重试");
+					}
+				});
+			}
+			
+			function noResults(){
+				var str = `
+					<li class="mui-table-view-cell mui-media" style="text-align: center;">
+						<a href="javascript:;">
+							<div class="mui-media-body" style="margin-top: 8px;">
+								查找结果为空！
+							</div>
+						</a>
+					</li>
+				`;
+				mui("#results")[0].innerHTML = str;
+			}
+		})
+		
+	</script>
+</html>

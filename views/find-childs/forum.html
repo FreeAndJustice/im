@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<style type="text/css">
+			.mui-preview-image.mui-fullscreen {
+				position: fixed;
+				z-index: 20;
+				background-color: #000;
+			}
+
+			.mui-preview-header,
+			.mui-preview-footer {
+				position: absolute;
+				width: 100%;
+				left: 0;
+				z-index: 10;
+			}
+
+			.mui-preview-header {
+				height: 44px;
+				top: 0;
+			}
+
+			.mui-preview-footer {
+				height: 50px;
+				bottom: 0px;
+			}
+
+			.mui-preview-header .mui-preview-indicator {
+				display: block;
+				line-height: 25px;
+				color: #fff;
+				text-align: center;
+				margin: 15px auto 4;
+				width: 70px;
+				background-color: rgba(0, 0, 0, 0.4);
+				border-radius: 12px;
+				font-size: 16px;
+			}
+
+			.mui-preview-image {
+				display: none;
+				-webkit-animation-duration: 0.5s;
+				animation-duration: 0.5s;
+				-webkit-animation-fill-mode: both;
+				animation-fill-mode: both;
+			}
+
+			.mui-preview-image.mui-preview-in {
+				-webkit-animation-name: fadeIn;
+				animation-name: fadeIn;
+			}
+
+			.mui-preview-image.mui-preview-out {
+				background: none;
+				-webkit-animation-name: fadeOut;
+				animation-name: fadeOut;
+			}
+
+			.mui-preview-image.mui-preview-out .mui-preview-header,
+			.mui-preview-image.mui-preview-out .mui-preview-footer {
+				display: none;
+			}
+
+			.mui-zoom-scroller {
+				position: absolute;
+				display: -webkit-box;
+				display: -webkit-flex;
+				display: flex;
+				-webkit-box-align: center;
+				-webkit-align-items: center;
+				align-items: center;
+				-webkit-box-pack: center;
+				-webkit-justify-content: center;
+				justify-content: center;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				margin: 0;
+				-webkit-backface-visibility: hidden;
+			}
+
+			.mui-zoom {
+				-webkit-transform-style: preserve-3d;
+				transform-style: preserve-3d;
+			}
+
+			.mui-slider .mui-slider-group .mui-slider-item img {
+				width: auto;
+				height: auto;
+				max-width: 100%;
+				max-height: 100%;
+			}
+
+			.mui-android-4-1 .mui-slider .mui-slider-group .mui-slider-item img {
+				width: 100%;
+			}
+
+			.mui-android-4-1 .mui-slider.mui-preview-image .mui-slider-group .mui-slider-item {
+				display: inline-table;
+			}
+
+			.mui-android-4-1 .mui-slider.mui-preview-image .mui-zoom-scroller img {
+				display: table-cell;
+				vertical-align: middle;
+			}
+
+			.mui-preview-loading {
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				top: 0;
+				left: 0;
+				display: none;
+			}
+
+			.mui-preview-loading.mui-active {
+				display: block;
+			}
+
+			.mui-preview-loading .mui-spinner-white {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				margin-left: -25px;
+				margin-top: -25px;
+				height: 50px;
+				width: 50px;
+			}
+
+			.mui-preview-image img.mui-transitioning {
+				-webkit-transition: -webkit-transform 0.5s ease, opacity 0.5s ease;
+				transition: transform 0.5s ease, opacity 0.5s ease;
+			}
+
+			@-webkit-keyframes fadeIn {
+				0% {
+					opacity: 0;
+				}
+
+				100% {
+					opacity: 1;
+				}
+			}
+
+			@keyframes fadeIn {
+				0% {
+					opacity: 0;
+				}
+
+				100% {
+					opacity: 1;
+				}
+			}
+
+			@-webkit-keyframes fadeOut {
+				0% {
+					opacity: 1;
+				}
+
+				100% {
+					opacity: 0;
+				}
+			}
+
+			@keyframes fadeOut {
+				0% {
+					opacity: 1;
+				}
+
+				100% {
+					opacity: 0;
+				}
+			}
+
+			p img {
+				max-width: 100%;
+				height: 100px;
+			}
+
+
+			.mui-bar~.mui-content .mui-fullscreen {
+				top: 44px;
+				height: auto;
+			}
+
+			.mui-pull-top-tips {
+				position: absolute;
+				top: -20px;
+				left: 50%;
+				margin-left: -25px;
+				width: 40px;
+				height: 40px;
+				border-radius: 100%;
+				z-index: 1;
+			}
+
+			.mui-bar~.mui-pull-top-tips {
+				top: 24px;
+			}
+
+			.mui-pull-top-wrapper {
+				width: 42px;
+				height: 42px;
+				display: block;
+				text-align: center;
+				background-color: #efeff4;
+				border: 1px solid #ddd;
+				border-radius: 25px;
+				background-clip: padding-box;
+				box-shadow: 0 4px 10px #bbb;
+				overflow: hidden;
+			}
+
+			.mui-pull-top-tips.mui-transitioning {
+				-webkit-transition-duration: 200ms;
+				transition-duration: 200ms;
+			}
+
+			.mui-pull-top-tips .mui-pull-loading {
+				/*-webkit-backface-visibility: hidden;
+					-webkit-transition-duration: 400ms;
+					transition-duration: 400ms;*/
+
+				margin: 0;
+			}
+
+			.mui-pull-top-wrapper .mui-icon,
+			.mui-pull-top-wrapper .mui-spinner {
+				margin-top: 7px;
+			}
+
+			.mui-pull-top-wrapper .mui-icon.mui-reverse {
+				/*-webkit-transform: rotate(180deg) translateZ(0);*/
+			}
+
+			.mui-pull-bottom-tips {
+				text-align: center;
+				background-color: #efeff4;
+				font-size: 15px;
+				line-height: 40px;
+				color: #777;
+			}
+
+			.mui-pull-top-canvas {
+				overflow: hidden;
+				background-color: #fafafa;
+				border-radius: 40px;
+				box-shadow: 0 4px 10px #bbb;
+				width: 40px;
+				height: 40px;
+				margin: 0 auto;
+			}
+
+			.mui-pull-top-canvas canvas {
+				width: 40px;
+			}
+
+			.mui-slider-indicator.mui-segmented-control {
+				background-color: #efeff4;
+			}
+			.mui-table-view-cell:after{
+				background-color:#FFFFFF;
+			}
+			.mui-card {
+				margin: 0;
+			}
+			.likeNum {
+				float: right;
+				color: #0062CC;
+				font-size: 10px;
+				margin-top: -26px;
+				margin-right: -38px;
+			}
+			.commentNum {
+				float: right;
+				color: #7a817d;
+				font-size: 10px;
+				margin-top: -26px;
+				margin-right: -38px;
+			}
+		</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">好友动态</h1>
+			<img id="toEditForum" src="../../icon/add.png" style="width: 20px;height: 20px;margin-top: 12px;" class="mui-pull-right">
+		</header>
+		<div id="loading" class="mui-content">
+			<ul id="forums" class="mui-table-view" style="margin-top: 0px;">
+				<!-- <li class="mui-table-view-cell">
+					<div class="mui-card">
+						<div class="mui-card-header mui-card-media">
+							<img src="../../images/logo.png" />
+							<div class="mui-media-body">
+								小M
+								<p>发表于 2016-06-30 15:30</p>
+							</div>
+						</div>
+						<div class="mui-card-content">
+							<div class="mui-card-content-inner">
+								包含页眉页脚的卡片，页眉常用来显示面板标题，页脚用来显示额外信息或支持的操作（比如点赞、评论等）
+							</div>
+						</div>
+						<div class="mui-card-footer ">
+							<div class="mui-row"></div>
+							<div class="mui-row"></div>
+							<div class="mui-row">
+								<div class="mui-col-xs-4 mui-col-sm-4" style="padding-right: 40px;">
+									<img src="../../icon/like.png" style="width: 20px;height: 20px;">
+								</div>
+								<div class="mui-col-xs-4 mui-col-sm-4" style="padding-right: 40px;">
+									<img src="../../icon/comment.png" style="width: 20px;height: 20px;">
+								</div>
+								<div class="mui-col-xs-4 mui-col-sm-4" style="padding-right: -30px;">
+									<img src="../../icon/forward.png" style="width: 20px;height: 20px;">
+								</div>
+							</div>
+						</div>
+					</div>
+				</li>
+				<li class="mui-table-view-cell">
+					<div class="mui-card">
+						<div class="mui-card-header mui-card-media">
+							<img src="../../images/logo.png" />
+							<div class="mui-media-body">
+								小M
+								<p>发表于 2016-06-30 15:30</p>
+							</div>
+						</div>
+						<div class="mui-card-content">
+							<div class="mui-card-content-inner">
+								<span>
+									包含页眉页脚的卡片，页眉常用来显示面板标题，页脚用来显示额外信息或支持的操作（比如点赞、评论等）
+								</span>
+								<img src="../../images/yuantiao.jpg" data-preview-src="" data-preview-group="2" width="100%" />
+							</div>
+						</div>
+						<div class="mui-card-footer">
+							<div class="mui-row"></div>
+							<div class="mui-row"></div>
+							<div class="mui-row">
+								<div class="mui-col-xs-4 mui-col-sm-4" style="padding-right: 40px;">
+									<img src="../../icon/myLike.png" style="width: 20px;height: 20px;">
+								</div>
+								<div class="mui-col-xs-4 mui-col-sm-4" style="padding-right: 40px;">
+									<img src="../../icon/comment.png" style="width: 20px;height: 20px;">
+								</div>
+								<div class="mui-col-xs-4 mui-col-sm-4" style="padding-right: -30px;">
+									<img src="../../icon/forward.png" style="width: 20px;height: 20px;">
+								</div>
+							</div>
+						</div>
+					</div>
+				</li>
+				<li class="mui-table-view-cell">
+					<div class="mui-card">
+						<div class="mui-card-header mui-card-media">
+							<img src="../../images/logo.png" />
+							<div class="mui-media-body">
+								小M
+								<p>发表于 2016-06-30 15:30</p>
+							</div>
+						</div>
+						<div class="mui-card-content">
+							<div class="mui-card-content-inner">
+								<span>
+									包含页眉页脚的卡片，页眉常用来显示面板标题，页脚用来显示额外信息或支持的操作（比如点赞、评论等）
+								</span>
+							</div>
+							<ul class="mui-table-view mui-grid-view mui-grid-9" style="background-color: #FFFFFF;border: none;">
+								<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+									<p>
+										<img src="../../images/login-1.png" data-preview-src="" data-preview-group="1" width="100%" />
+									</p>
+								</li>
+								<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+									<p>
+										<img src="../../images/yuantiao.jpg" data-preview-src="" data-preview-group="1" width="100%" />
+									</p>
+								</li>
+								<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+									<p>
+										<img src="../../images/yuantiao.jpg" data-preview-src="" data-preview-group="1" width="100%" />
+									</p>
+								</li>
+								<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+									<p>
+										<img src="../../images/yuantiao.jpg" data-preview-src="" data-preview-group="1" width="100%" />
+									</p>
+								</li>
+								<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+									<p>
+										<img src="../../images/yuantiao.jpg" data-preview-src="" data-preview-group="1" width="100%" />
+									</p>
+								</li>
+								<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+									<p>
+										<img src="../../images/yuantiao.jpg" data-preview-src="" data-preview-group="1" width="100%" />
+									</p>
+								</li>
+								<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+									<p>
+										<img src="../../images/yuantiao.jpg" data-preview-src="" data-preview-group="1" width="100%" />
+									</p>
+								</li>
+								<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+									<p>
+										<img src="../../images/yuantiao.jpg" data-preview-src="" data-preview-group="1" width="100%" />
+									</p>
+								</li>
+								<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+									<p>
+										<img src="../../images/yuantiao.jpg" data-preview-src="" data-preview-group="1" width="100%" />
+									</p>
+								</li>
+							</ul>
+						</div>
+						<div class="mui-card-footer">
+							<div class="mui-row"></div>
+							<div class="mui-row"></div>
+							<div class="mui-row">
+								<div class="mui-col-xs-4 mui-col-sm-4" style="padding-right: 40px;">
+									<img src="../../icon/myLike.png" style="width: 20px;height: 20px;">
+								</div>
+								<div class="mui-col-xs-4 mui-col-sm-4" style="padding-right: 40px;">
+									<img src="../../icon/comment.png" style="width: 20px;height: 20px;">
+								</div>
+								<div class="mui-col-xs-4 mui-col-sm-4" style="padding-right: -30px;">
+									<img src="../../icon/forward.png" style="width: 20px;height: 20px;">
+								</div>
+							</div>
+						</div>
+					</div>
+				</li>-->
+			</ul> 
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/mui.zoom.js"></script>
+		<script src="../../js/mui.previewimage.js"></script>
+		<script src="../../js/mui.pullToRefresh.js"></script>
+		<script src="../../js/mui.pullToRefresh.material.js"></script>
+		<script src="../../js/APP.js"></script> 
+		<script>
+			window.addEventListener('refresh', function(e) { //执行刷新
+				if(APP.getIsReloadIndex()){
+					APP.setIsReloadIndex(false);
+					location.reload();
+				}
+			});
+			mui.previewImage();
+
+			document.getElementById("toEditForum").addEventListener('tap', function() {
+				mui.openWindow({
+					url: 'editForum.html',
+					extras: {
+						id: '100'
+					}
+				})
+			});
+			mui.plusReady(function() {
+				(function($) {
+					var lastDate = "";
+					var nextDate = "";
+					var ul = document.getElementById("forums");
+					//阻尼系数
+					var deceleration = mui.os.ios ? 0.003 : 0.0009;
+					$.ready(function() {
+						$(document.getElementById("loading")).pullToRefresh({
+							down: {
+								callback: function() {
+									var self = this;
+									setTimeout(function() {
+										var res = getCircles(0,nextDate);
+										if(res.length > 0){
+											mui.each(res,function(num,item){
+												ul.insertBefore(createFragment(ul,item), ul.children[0]);
+											});
+										}else{
+											mui.toast("暂无动态");
+										}
+										self.endPullDownToRefresh();
+									}, 1000);
+								}
+							},
+							up: {
+								callback: function() {
+									var self = this;
+									setTimeout(function() {
+										var res = getCircles(1,lastDate);
+										if(res.length > 0){
+											mui.each(res,function(num,item){
+												ul.appendChild(createFragment(ul,item));
+												self.endPullUpToRefresh();
+											});
+										}else{
+											self.endPullUpToRefresh(true);
+										}
+									}, 1000);
+								}
+							}
+						});
+						//获得动态数据
+						var getCircles = function(type,date){
+							var res;
+							mui.ajax(APP.serverURL + "/circle/getFriendCircles/" + APP.getUserInfo().account,{
+								data:{
+									pn : 1,
+									type : type,
+									date : date
+								},
+								dataType:'json',//服务器返回json格式数据
+								type:'get',//HTTP请求类型
+								async : false,
+								success:function(data){
+									res = data.extend.data;
+									if(res.length > 0){
+										lastDate = res[res.length - 1].createDate;
+										nextDate = res[0].createDate;
+									}
+								},
+								error:function(e){
+									mui.alert("网络错误，请重试");
+								}
+							});
+							return res;
+						};
+						
+						//时间转换
+						var dateChange = function(date){
+							//发表时间
+							var d = new Date(date);
+							var year = d.getFullYear();
+							var month = d.getMonth() + 1;
+							var day = d.getDate();
+							var hour = d.getHours();
+							var min = d.getMinutes();
+							
+							//当前时间
+							var nd = new Date();
+							var nyear = nd.getFullYear();
+							var nmonth = nd.getMonth() + 1;
+							var nday = nd.getDate();
+							var nhour = nd.getHours();
+							var nmin = nd.getMinutes();
+							
+							if(nyear == year && nmonth == month && nday == day && nhour == hour){
+								if(nmin == min){
+									return "1分钟前";
+								}else{
+									return ((nmin - min) + "分钟前");
+								}
+							}else if(nyear == year && nmonth == month && nday == day){
+								return ((nhour - hour) + "小时前");
+							}else if(nyear == year && nmonth == month){
+								if(nday - day == 1){
+									return ("昨天"+" "+sdfDate(hour)+":"+sdfDate(min)+":"+sdfDate(d.getSeconds()));
+								}else{
+									return (sdfDate(month)+"-"+sdfDate(day)+" "+sdfDate(hour)+":"+sdfDate(min)+":"+sdfDate(d.getSeconds()));
+								}
+							}else{
+								return (year+"-"+sdfDate(month)+"-"+sdfDate(day)+" "+sdfDate(hour)+":"+sdfDate(min)+":"+sdfDate(d.getSeconds()));
+							}
+							console.log();
+						};
+						
+						var sdfDate = function(num){
+							if(num < 10){
+								return "0"+num;
+							}else{
+								return num;
+							}
+						};
+						
+						//创建UI
+						var createFragment = function(ul,data) {
+							var fragment = document.createDocumentFragment();
+							var child = document.createElement('li');
+							child.className = "mui-table-view-cell";
+							
+							//头
+							var str = `
+								<div class="mui-card">
+									<div class="mui-card-header mui-card-media">
+										<img src="`+ (APP.imageURL + "/userImage/" + data.userInfo.userImage) +`" />
+										<div class="mui-media-body">
+											` + data.userInfo.userName +`
+											<p>发表于 `+ dateChange(data.createDate) +`</p>
+										</div>
+									</div>
+							`;
+							//中
+							if(data.context == null || data.context == ""){//只有图片
+								if(data.circleImages.length == 1){//一张
+									str += `
+										<div class="mui-card-content">
+											<div class="mui-card-content-inner">
+												<img height="200px" src="`+ (APP.imageURL + "/circleImage/" + data.circleImages[0].imageName) +`" data-preview-src="" data-preview-group="` + data.circleId +`" width="100%"/>
+											</div>
+										</div>
+									`;
+								}else{//多张
+									str += `
+										<div class="mui-card-content">
+											<ul class="mui-table-view mui-grid-view mui-grid-9" style="background-color: #FFFFFF;border: none;">
+										`;
+										mui.each(data.circleImages,function(num,item){
+											str += `
+												<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+													<p>
+														<img src="`+(APP.imageURL + "/circleImage/" + item.imageName)+`" data-preview-src="" data-preview-group="` + data.circleId +`" width="100%" />
+													</p>
+												</li>
+											`;
+										});
+									str +=		`</ul>
+										</div>
+									`;
+								}
+							}else if(data.circleImages == null || data.circleImages.length == 0){//只有文字
+								str += `
+									<div class="mui-card-content">
+										<div class="mui-card-content-inner">
+											`+(data.context)+`
+										</div>
+									</div>
+								`;
+							}else{//图文
+								if(data.circleImages.length == 1){
+									str += `
+										<div class="mui-card-content">
+											<div class="mui-card-content-inner">
+												<span>
+													`+(data.context)+`
+												</span>
+												<img Style="margin-top:5px" height="200px" src="`+ (APP.imageURL + "/circleImage/" + data.circleImages[0].imageName) +`" data-preview-src="" data-preview-group="` + data.circleId +`" width="100%" />
+											</div>
+										</div>
+									`;
+								}else{
+									str += `
+										<div class="mui-card-content">
+											<div class="mui-card-content-inner">
+												<span>
+													`+(data.context)+`
+												</span>
+											</div>
+											<ul class="mui-table-view mui-grid-view mui-grid-9" style="background-color: #FFFFFF;border: none;">`;
+									
+									mui.each(data.circleImages,function(num,item){
+										str += `
+											<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+												<p>
+													<img src="`+(APP.imageURL + "/circleImage/" + item.imageName)+`" data-preview-src="" data-preview-group="` + data.circleId +`" width="100%" />
+												</p>
+											</li>
+										`;
+									});
+												
+									str += `	</ul>
+										</div>
+									`;
+								}
+							}
+							var likeNum = "";
+							if(data.likeCircle.length != 0){
+								likeNum = `<span id-circleId="`+data.circleId+`" class="likeNum">(`+data.likeCircle.length+`)</span>`;
+							}
+							var commentNum = "";
+							if(data.commentCircle.length != 0){
+								commentNum = `<span id-circleId="`+data.circleId+`" class="commentNum">(`+data.commentCircle.length+`)</span>`;
+							}
+							//尾
+							str += `
+									<div class="mui-card-footer ">
+										<div class="mui-row"></div>
+										<div class="mui-row"></div>
+										<div class="mui-row">
+											<div class="mui-col-xs-4 mui-col-sm-4" style="padding-right: -20px;">
+											
+											</div>
+											<div onclick="test()" class="mui-col-xs-4 mui-col-sm-4" style="padding-right: 40px;">
+												<img src="../../icon/like.png" style="width: 20px;height: 20px;">`+likeNum+`
+											</div>
+											<div class="mui-col-xs-4 mui-col-sm-4" style="padding-right: 40px;">
+												<img src="../../icon/comment.png" style="width: 20px;height: 20px;">`+commentNum+`
+											</div>
+										</div>
+									</div>
+								</div>
+							`;
+							child.innerHTML = str;
+							fragment.appendChild(child);
+							return fragment;
+						};
+						
+						//加载动态信息
+						var wt = plus.nativeUI.showWaiting("正在加载...", {loading:{display:"inline"}});
+						var res = getCircles(-1,"");
+						mui.each(res,function(num,item){
+							ul.appendChild(createFragment(ul,item));
+						});
+						wt.close();
+					});
+				})(mui);
+			});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<style>
+			.mui-control-content {
+				background-color: white;
+				min-height: 215px;
+			}
+			.mui-control-content .mui-loading {
+				margin-top: 50px;
+			}
+			.my-input {
+				height: 30px;
+				background-color: #ffffff;
+				border-radius: 20px;
+				background-image: url(../../icon/search-1.png);
+				background-repeat: no-repeat;
+				background-position: center;
+				background-size: 25px;
+				margin-bottom: 20px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content">
+			<div class="mui-content-padded" style="margin: 5px;margin-top: 20px;">
+				<div id="search" class="my-input">
+					
+				</div>
+			</div>
+			<ul class="mui-table-view mui-table-view-chevron">
+				<li id="myReqMsg" class="mui-table-view-cell">
+					<a class="mui-navigate-right">
+						新朋友
+						<span id="newReqMsgNum" class="mui-badge mui-badge-danger mui-hidden">0</span>
+					</a>
+				</li>
+			</ul>
+			<div id="slider" class="mui-slider mui-fullscreen" style="margin-top: 120px;">
+				<div id="sliderSegmentedControl" class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+					<a class="mui-control-item" href="#item1mobile">
+						好友
+					</a>
+					<a class="mui-control-item" href="#item2mobile">
+						分组
+					</a>
+					<a class="mui-control-item" href="#item3mobile">
+						群聊
+					</a>
+				</div>
+				<div id="sliderProgressBar" class="mui-slider-progress-bar mui-col-xs-4"></div>
+				<div class="mui-slider-group">
+					<div id="item1mobile" class="mui-slider-item mui-control-content mui-active">
+						<div id="scroll1" class="mui-scroll-wrapper">
+							<div class="mui-scroll">
+								<ul id="my_all_friends" class="mui-table-view mui-table-view-chevron">
+									<!-- <li class="mui-table-view-cell mui-media">
+										<a href="javascript:;">
+											<img class="mui-media-object mui-pull-left" src="../../images/shuijiao.jpg">
+											<div class="mui-media-body">
+												幸福
+												<p class='mui-ellipsis'>能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</p>
+											</div>
+										</a>
+									</li> -->
+								</ul>
+							</div>
+						</div>
+					</div>
+					
+					<div id="item2mobile" class="mui-slider-item mui-control-content">
+						<div id="scroll2" class="mui-scroll-wrapper">
+							<div class="mui-scroll">
+								<ul id="my_group_friends" class="mui-table-view mui-table-view-chevron">
+									<!-- <li class="mui-table-view-cell mui-collapse">
+										<a class="mui-navigate-right" href="#">
+											好友
+										</a>
+										<ul class="mui-table-view mui-table-view-chevron">
+											<li class="mui-table-view-cell mui-media">
+												<a href="javascript:;">
+													<img class="mui-media-object mui-pull-left" src="../../images/shuijiao.jpg">
+													<div class="mui-media-body">
+														幸福
+														<p class='mui-ellipsis'>能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</p>
+													</div>
+												</a>
+											</li>
+											<li class="mui-table-view-cell mui-media">
+												<a href="javascript:;">
+													<img class="mui-media-object mui-pull-left" src="../../images/muwu.jpg">
+													<div class="mui-media-body">
+														木屋
+														<p class='mui-ellipsis'>想要这样一间小木屋，夏天挫冰吃瓜，冬天围炉取暖.</p>
+													</div>
+												</a>
+											</li>
+											<li class="mui-table-view-cell mui-media">
+												<a href="javascript:;">
+													<img class="mui-media-object mui-pull-left" src="../../images/cbd.jpg">
+													<div class="mui-media-body">
+														CBD
+														<p class='mui-ellipsis'>烤炉模式的城，到黄昏，如同打翻的调色盘一般.</p>
+													</div>
+												</a>
+											</li>
+										</ul>
+									</li> -->
+								</ul>
+							</div>
+						</div>
+		
+					</div>
+					
+					<div id="item3mobile" class="mui-slider-item mui-control-content">
+						<div id="scroll3" class="mui-scroll-wrapper">
+							<div class="mui-scroll">
+								<ul id="myGroups" class="mui-table-view mui-table-view-chevron">
+									<!-- <li class="mui-table-view-cell mui-media">
+										<a href="javascript:;">
+											<img class="mui-media-object mui-pull-left" src="../../images/shuijiao.jpg">
+											<div class="mui-media-body">
+												幸福
+												<p class='mui-ellipsis'>能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</p>
+											</div>
+										</a>
+									</li>
+									 -->
+								</ul>
+								
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+
+	</body>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/APP.js"></script>
+	<script>
+		mui.init({
+			swipeBack:true //启用右滑关闭功能
+		});
+		window.addEventListener('chatWin', function(e) { //执行刷新
+			if(APP.getIsReloadIndex()){
+				APP.setIsReloadIndex(false);
+				plus.webview.getWebviewById("message.html").reload();
+				location.reload();
+			}
+		});
+		mui("#myReqMsg")[0].addEventListener('tap', function() {
+			var obj = mui("#newReqMsgNum")[0];
+			obj.innerHTML = 0;
+			obj.classList.remove("mui-hidden");
+			obj.classList.add("mui-hidden");
+			mui.openWindow({url:'../contacts-childs/reqMsg.html',
+				id : "addFriends",
+				extras:{id:'100'},
+			});
+		});
+		mui.plusReady(function() {
+			
+			mui("#search")[0].addEventListener('tap', function() {
+				console.log(111);
+				mui.openWindow({url:'../searchMyFriends.html',
+					id : "searchMyFriends",
+					extras:{id:'100'},
+				}); 
+			});
+			
+			//按分组显示好友
+			function showMyGroupFriends(datas){
+				mui.ajax(APP.serverURL + "/group/getGroups/"+APP.getUserInfo().account,{
+					data:{
+						
+					},
+					dataType:'json',//服务器返回json格式数据
+					type:'get',//HTTP请求类型
+					success:function(data){
+						var res = data.extend.data;
+						if(res.length <= 0){
+							var str = `
+							<li class="mui-table-view-cell mui-collapse">
+								<a class="mui-navigate-right" href="#">
+									默认分组
+								</a>
+								<ul class="mui-table-view mui-table-view-chevron">`;
+							mui.each(datas,function(index,item){
+								var remark = "";
+								if(item.friendName == null || item.friendName == ""){
+									remark = null;
+								}else{
+									remark = item.friendName;
+								}
+								str += '<li class="mui-table-view-cell mui-media group_friends" id-account='+item.myFriends.account+'>' +
+									'<a href="javascript:;">' +
+										'<img class="mui-media-object mui-pull-left" src="' + (APP.imageURL + "/userImage/" + item.myFriends.userImage)+ '">' +
+										'<div class="mui-media-body">' +
+											 item.myFriends.userName + 
+											 (remark == null? "":("(" + remark + ")")) +
+											'<p class="mui-ellipsis">账号：'+ item.friendAccount +'</p>' +
+										'</div>' +
+									'</a>' +
+								'</li>'; 
+							});
+							str += `
+								</ul>
+							</li>
+							`;
+							document.getElementById("my_group_friends").innerHTML = str;
+						}else{
+							var str = "";
+							mui.each(res,function(index,group){
+								str += `
+									<li class="mui-table-view-cell mui-collapse">
+										<a class="mui-navigate-right" href="#">
+											` + group.groupName +`
+										</a>
+										<ul class="mui-table-view mui-table-view-chevron">`;
+								var str1 = "";
+								mui.each(datas,function(index,item){
+									var remark = "";
+									if(item.friendName == null || item.friendName == ""){
+										remark = null;
+									}else{
+										remark = item.friendName;
+									}
+									if(item.friendGroup == group.id){
+										str1 += '<li class="mui-table-view-cell mui-media group_friends" id-account='+item.myFriends.account+'>' +
+											'<a href="javascript:;">' +
+												'<img class="mui-media-object mui-pull-left" src="' + (APP.imageURL + "/userImage/" + item.myFriends.userImage) +'">' +
+												'<div class="mui-media-body">' +
+													 item.myFriends.userName + 
+													 (remark == null? "":("(" + remark + ")")) +
+													'<p class="mui-ellipsis">账号：'+ item.friendAccount +'</p>' +
+												'</div>' +
+											'</a>' +
+										'</li>'; 
+									}
+								});
+								str = str + str1 + `</ul>
+										</li>
+									`;
+							});
+							var strDef = `
+							<li class="mui-table-view-cell mui-collapse">
+								<a class="mui-navigate-right" href="#">
+									默认分组
+								</a>
+								<ul class="mui-table-view mui-table-view-chevron">`;
+							mui.each(datas,function(index,item){ 
+								var remark = "";
+								if(item.friendName == null || item.friendName == ""){
+									remark = null;
+								}else{
+									remark = item.friendName;
+								}
+								if(item.friendGroup == null && item.friendGroup == -1){
+									strDef += '<li class="mui-table-view-cell mui-media group_friends" id-account='+item.myFriends.account+'>' +
+										'<a href="javascript:;">' +
+											'<img class="mui-media-object mui-pull-left" src="' + (APP.imageURL + "/userImage/" + item.myFriends.userImage)+ '">' +
+											'<div class="mui-media-body">' +
+												 item.myFriends.userName + 
+												 (remark == null? "":("(" + remark + ")")) +
+												'<p class="mui-ellipsis">账号：'+ item.friendAccount +'</p>' +
+											'</div>' +
+										'</a>' +
+									'</li>'; 
+								} 
+							});
+							strDef += `
+									</ul>
+								</li>
+								`;		
+							document.getElementById("my_group_friends").innerHTML = strDef + str;
+							mui("#my_group_friends").on('tap','.group_friends',function(){
+								mui.openWindow({url:'../contacts-childs/userInfo.html',
+									extras:{
+										account : this.getAttribute("id-account")
+									},
+									
+								});
+							});
+						}
+					},
+					error:function(e){
+						mui.alert("网络错误，请重试");
+					}
+				});
+			}
+			
+			window.CONTACTS = {
+				//显示所有好友
+				showMyAllFriends : function(datas){
+					var str = "";
+					if(datas.length == 0){
+						str = `
+							<li class="mui-table-view-cell mui-media" style="text-align: center;">
+								<a href="javascript:;">
+									<div class="mui-media-body" style="margin-top: 8px;">
+										暂无好友！
+									</div>
+								</a>
+							</li>
+						`;
+						document.getElementById("my_all_friends").innerHTML = str;
+						return;
+					}
+					mui.each(datas,function(index,item){
+						var remark = "";
+						if(item.friendName == null || item.friendName == ""){
+							remark = null;
+						}else{
+							remark = item.friendName;
+						}
+						str += '<li class="mui-table-view-cell mui-media all_friends" id-account="'+item.myFriends.account+'">' +
+							'<a href="javascript:;" >' +
+								'<img class="mui-media-object mui-pull-left" src="' + (APP.imageURL + "/userImage/" + item.myFriends.userImage) +'">' +
+								'<div class="mui-media-body">' +
+									 item.myFriends.userName + 
+									 (remark == null? "":("(" + remark + ")")) +
+									'<p class="mui-ellipsis">账号：'+ item.friendAccount +'</p>' +
+								'</div>' +
+							'</a>' +
+						'</li>'; 
+					});
+					document.getElementById("my_all_friends").innerHTML = str;
+					mui("#my_all_friends").on('tap','.all_friends',function(){
+						mui.openWindow({url:'../contacts-childs/userInfo.html',
+							extras:{
+								account : this.getAttribute("id-account")
+							},
+							
+						});
+					});
+				},
+				setNewReqMsgNum : function(number){
+					var obj = mui("#newReqMsgNum")[0];
+					var num = parseInt(obj.innerHTML);
+					if(number == -1){
+						if(num <= 0){
+							num = 1;
+						}else{
+							num ++;
+						}
+					}else{
+						num = number;
+					}
+					obj.classList.remove("mui-hidden");
+					if(num < 100){
+						obj.innerHTML = num;
+					}else{
+						obj.innerHTML = "99+";
+					}
+				},
+				//显示我所在的群
+				showMyGroups : function(){
+					mui.ajax(APP.serverURL + "/group/getMyGroups",{
+						data:{
+							account : APP.getUserInfo().account
+						},
+						dataType:'json',//服务器返回json格式数据
+						type:'get',//HTTP请求类型
+						success:function(data){
+							var res = data.extend.data;
+							var str = "";
+							if(res.length == 0){
+								str = `
+									<li class="mui-table-view-cell mui-media" style="text-align: center;">
+										<a href="javascript:;">
+											<div class="mui-media-body" style="margin-top: 8px;">
+												暂无群聊！
+											</div>
+										</a>
+									</li>
+								`;
+								mui("#myGroups")[0].innerHTML = str;
+								return;
+							}
+							mui.each(res,function(index,item){
+								str += `
+									<li class="mui-table-view-cell mui-media my-groups" id-role="`+(item.groupRole)+`" id-account="`+(item.groupId)+`" id-name="`+(item.groupChat.groupName)+`" id-img="`+(APP.imageURL+"/userImage/"+item.groupChat.groupImage)+`">
+										<a href="javascript:;">
+											<img class="mui-media-object mui-pull-left" src="`+(APP.imageURL+"/userImage/"+item.groupChat.groupImage)+`">
+											<div class="mui-media-body">
+												`+(item.groupChat.groupName)+`
+												<p class='mui-ellipsis'>账号:`+(item.groupId)+`</p>
+											</div>
+										</a>
+									</li>
+								`;
+							});
+							mui("#myGroups")[0].innerHTML = str;
+							mui("#myGroups").on('tap','.my-groups',function(){
+								var chatWindow = {
+									account : this.getAttribute("id-account"),
+									userName : this.getAttribute("id-name"),
+									userImage : this.getAttribute("id-img"),
+									type : 'group',
+									role : this.getAttribute("id-role")
+								};
+								if(APP.setChatWindow(chatWindow)){
+									var obj = plus.webview.getWebviewById("message.html");
+									obj.evalJS('ShowWin.showChatWindows()'); 
+								}
+								
+								mui.openWindow({url:'../message-childs/chat.html',
+									id : "chat",
+									extras:{
+										type : 'group',
+										account : this.getAttribute("id-account"),
+										userName : this.getAttribute("id-name"),
+										role : this.getAttribute("id-role")
+									},
+									
+								});
+							});
+						},
+						error:function(e){
+							mui.alert("网络错误，请重试");
+						}
+					});
+				},
+				showFriends : function(){
+					mui.ajax(APP.serverURL + "/friends/getFriend/"+APP.getUserInfo().account,{
+						data:{
+							
+						},
+						dataType:'json',//服务器返回json格式数据
+						type:'get',//HTTP请求类型
+						success:function(data){
+							var res = data.extend.data;
+							CONTACTS.showMyAllFriends(res);
+							if(res.length == 0){
+								var str = `
+									<li class="mui-table-view-cell mui-media" style="text-align: center;">
+										<a href="javascript:;">
+											<div class="mui-media-body" style="margin-top: 8px;">
+												暂无好友！
+											</div>
+										</a>
+									</li>
+								`;
+								mui("#my_group_friends")[0].innerHTML = str;
+							}else{
+								showMyGroupFriends(res);
+							}
+						}, 
+						error:function(e){
+							mui.alert("网络错误，请重试");
+						}
+					});
+				}
+			}
+			CONTACTS.showFriends();
+			CONTACTS.showMyGroups();
+		});
+	</script>
+</html>

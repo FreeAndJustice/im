@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<style>
+			.title {
+				margin: 20px 15px 10px;
+				color: #6d6d72;
+				font-size: 15px;
+			}
+			.mui-media-body p{
+				width : 95%;
+			}
+			.mui-ellipsis{
+				height : 20px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">搜索好友</h1>
+		</header>
+		<div class="mui-content">
+			<div class="mui-content-padded" style="margin: 5px;margin-top: 20px;">
+				<div class="mui-input-row mui-search">
+					<input id="search" type="search" class="mui-input-clear" placeholder="">
+				</div>
+			</div>
+
+			<ul id="myFriends" class="mui-table-view">
+				<!-- <li class="mui-table-view-cell mui-media">
+					<a onclick="openChat('123')">
+						<img class="mui-media-object mui-pull-left" src="../../images/shuijiao.jpg">
+						<div class="mui-media-body">
+							<span>名字</span>
+							<p class='mui-ellipsis'>最新消息内容</p>
+						</div>
+						<span class="mui-badge mui-badge-danger">45</span>
+					</a>
+				</li>
+				<li class="mui-table-view-cell mui-media">
+					<a onclick="APP.sendMsg()">
+						<img class="mui-media-object mui-pull-left" src="../../images/muwu.jpg">
+						<div class="mui-media-body">
+							木屋
+							<p class='mui-ellipsis'>想要这样一间小木屋，夏天挫冰吃瓜，冬天围炉取暖.</p>
+						</div>
+					</a>
+				</li> -->
+			</ul>
+		</div>
+
+	</body>
+	<script src="../js/mui.min.js"></script>
+	<script src="../js/APP.js"></script>
+	<script>
+		mui.init({
+			swipeBack: true //启用右滑关闭功能
+		});
+		mui.plusReady(function() {
+			
+			mui("#search")[0].addEventListener('input', function(event) {
+				var keys = this.value;
+				if(keys == ""){
+					return;
+				}
+				mui.ajax(APP.serverURL + "/friends/searchMyFriends", {
+					data: {
+						myAccount : APP.getUserInfo().account,
+						keys : keys
+					},
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					async: true,
+					success: function(data) {
+						var res = data.extend.data;
+						var str = "";
+						if(res.length == 0){
+							str = `
+								<li class="mui-table-view-cell mui-media" style="text-align: center;">
+									<a href="javascript:;">
+										<div class="mui-media-body" style="margin-top: 8px;">
+											没有匹配到结果！
+										</div>
+									</a>
+								</li>
+							`;
+							mui("#myFriends")[0].innerHTML = str;
+							return;
+						}
+						mui.each(res,function(num,item){
+							str += `
+								<li id-account="`+(item.myFriends.account)+`" class="mui-table-view-cell mui-media myFriends">
+									<a>
+										<img class="mui-media-object mui-pull-left" src="`+(APP.imageURL + "/userImage/" + item.myFriends.userImage)+`">
+										<div class="mui-media-body">
+											<span>`+(item.myFriends.userName)+`</span>
+											<p class='mui-ellipsis'>账号:`+(item.myFriends.account)+`</p>
+										</div>
+									</a>
+								</li>
+							`;
+						});
+						mui("#myFriends")[0].innerHTML = str;
+						mui("#myFriends").on('tap','.myFriends',function(){
+							mui.openWindow({url:'contacts-childs/userInfo.html',
+								extras:{
+									account : this.getAttribute("id-account")
+								},
+								
+							});
+						});
+					},
+					error: function(e) {
+						mui.alert("网络错误，请重试");
+					}
+				});
+			});
+			
+			
+		})
+	</script>
+</html>

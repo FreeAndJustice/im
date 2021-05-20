@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<link href="../../css/mui.picker.css" rel="stylesheet" />
+		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<style>
+			html,
+			body {
+				background-color: #efeff4;
+			}
+
+			.mui-views,
+			.mui-view,
+			.mui-pages,
+			.mui-page,
+			.mui-page-content {
+				position: absolute;
+				left: 0;
+				right: 0;
+				top: 0;
+				bottom: 0;
+				width: 100%;
+				height: 100%;
+				background-color: #efeff4;
+			}
+
+			.mui-pages {
+				top: 46px;
+				height: auto;
+			}
+
+			.mui-scroll-wrapper,
+			.mui-scroll {
+				background-color: #efeff4;
+			}
+
+			.mui-page.mui-transitioning {
+				-webkit-transition: -webkit-transform 300ms ease;
+				transition: transform 300ms ease;
+			}
+
+			.mui-page-left {
+				-webkit-transform: translate3d(0, 0, 0);
+				transform: translate3d(0, 0, 0);
+			}
+
+			.mui-ios .mui-page-left {
+				-webkit-transform: translate3d(-20%, 0, 0);
+				transform: translate3d(-20%, 0, 0);
+			}
+
+			.mui-navbar {
+				position: fixed;
+				right: 0;
+				left: 0;
+				z-index: 10;
+				height: 44px;
+				background-color: #f7f7f8;
+			}
+
+			.mui-navbar .mui-bar {
+				position: absolute;
+				background: transparent;
+				text-align: center;
+			}
+
+			.mui-android .mui-navbar-inner.mui-navbar-left {
+				opacity: 0;
+			}
+
+			.mui-ios .mui-navbar-left .mui-left,
+			.mui-ios .mui-navbar-left .mui-center,
+			.mui-ios .mui-navbar-left .mui-right {
+				opacity: 0;
+			}
+
+			.mui-navbar .mui-btn-nav {
+				-webkit-transition: none;
+				transition: none;
+				-webkit-transition-duration: .0s;
+				transition-duration: .0s;
+			}
+
+			.mui-navbar .mui-bar .mui-title {
+				display: inline-block;
+				width: auto;
+			}
+
+			.mui-page-shadow {
+				position: absolute;
+				right: 100%;
+				top: 0;
+				width: 16px;
+				height: 100%;
+				z-index: -1;
+				content: '';
+			}
+
+			.mui-page-shadow {
+				background: -webkit-linear-gradient(left, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, .01) 50%, rgba(0, 0, 0, .2) 100%);
+				background: linear-gradient(to right, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, .01) 50%, rgba(0, 0, 0, .2) 100%);
+			}
+
+			.mui-navbar-inner.mui-transitioning,
+			.mui-navbar-inner .mui-transitioning {
+				-webkit-transition: opacity 300ms ease, -webkit-transform 300ms ease;
+				transition: opacity 300ms ease, transform 300ms ease;
+			}
+
+			.mui-page {
+				display: none;
+			}
+
+			.mui-pages .mui-page {
+				display: block;
+			}
+
+			.mui-page .mui-table-view:first-child {
+				margin-top: 15px;
+			}
+
+			.mui-page .mui-table-view:last-child {
+				margin-bottom: 30px;
+			}
+
+			.mui-table-view {
+				margin-top: 20px;
+			}
+
+			.mui-table-view span.mui-pull-right {
+				color: #999;
+			}
+
+			.mui-table-view-divider {
+				background-color: #efeff4;
+				font-size: 14px;
+			}
+
+			.mui-table-view-divider:before,
+			.mui-table-view-divider:after {
+				height: 0;
+			}
+
+			.head {
+				height: 40px;
+			}
+
+			#head {
+				line-height: 40px;
+			}
+
+			.head-img {
+				width: 40px;
+				height: 40px;
+			}
+
+			#head-img1 {
+				position: absolute;
+				bottom: 10px;
+				right: 40px;
+				width: 40px;
+				height: 40px;
+			}
+
+			.update {
+				font-style: normal;
+				color: #999999;
+				margin-right: -25px;
+				font-size: 15px
+			}
+
+			.mui-fullscreen {
+				position: fixed;
+				z-index: 20;
+				background-color: #000;
+			}
+
+			.mui-ios .mui-navbar .mui-bar .mui-title {
+				position: static;
+			}
+
+			/*问题反馈在setting页面单独的css*/
+			#feedback .mui-popover {
+				position: fixed;
+			}
+
+			#feedback .mui-table-view:last-child {
+				margin-bottom: 0px;
+			}
+
+			#feedback .mui-table-view:first-child {
+				margin-top: 0px;
+			}
+
+			.mui-plus.mui-plus-stream .mui-stream-hidden {
+				display: none !important;
+			}
+			.info{
+				word-wrap:break-word;
+				color: #555555;
+				font-size: 18px;
+				background-color: #fff;
+				text-align: center;
+			}
+
+			/*问题反馈在setting页面单独的css==end*/
+		</style>
+		<link rel="stylesheet" type="text/css" href="../../css/feedback.css" />
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">扫描信息</h1>
+		</header>
+		<div class="mui-content" id="res">
+			
+		</div>
+	</body>
+	<script src="../../js/mui.min.js "></script>
+	<script src="../../js/APP.js"></script>
+	<script>
+		mui.plusReady(function() {
+			var self = plus.webview.currentWebview();
+			var res = self.result;
+			var flag;
+			try {
+				var obj = JSON.parse(res);
+				if (typeof obj == 'object' && obj) {
+					if(obj.account == null || obj.account == ""){
+						flag = false;
+					}else{
+						flag = true;
+					}
+				} else {
+					flag = false;
+				}
+			} catch (e) {
+				flag = false;
+			}
+			if(flag){//是名片
+				mui.ajax(APP.serverURL + "/user/getUserInfo", {
+					data: {
+						account: obj.account
+					},
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					success: function(data) {
+						if (data.code == 200) {
+							mui.toast(data.msg);
+						} else {
+							var user = data.extend.data;
+							var address = "";
+							if(user.province == null || user.province == ""){
+								address = "暂无位置信息";
+							}else{
+								address = user.province+"-"+user.city+"-"+user.county;
+							}
+							var str = `
+								<ul class="mui-table-view mui-table-view-chevron">
+									<li class="mui-table-view-cell mui-media">
+										<img class="mui-media-object mui-pull-left" src="`+(APP.imageURL+"/userImage/"+user.userImage)+`">
+										<div class="mui-media-body">
+											<span>`+(user.userName)+`</span>
+											<p class='mui-ellipsis'>账号:<span>`+(user.account)+`</span></p>
+										</div>
+									</li>
+								</ul>
+								<ul class="mui-table-view mui-table-view-chevron">
+									<li class="mui-table-view-cell">
+										位置
+										<i id="address" class="mui-pull-right update" style="margin-right: -50px;">`+address+`</i>
+									</li>
+								</ul>
+								<ul class="mui-table-view">
+									<li id="`+(user.account)+`" class="mui-table-view-cell friends" style="text-align: center;">
+										<a>添加好友</a>
+									</li>
+								</ul>
+							`;
+							mui("#res")[0].innerHTML = str;
+							mui("#res").on('tap', '.friends', function() {
+								mui.ajax(APP.serverURL + "/msgRecord/addMsgRecord",{
+									data:{
+										fromAccount : APP.getUserInfo().account,
+										toAccount : this.getAttribute("id")
+									},
+									dataType:'json',//服务器返回json格式数据
+									type:'post',//HTTP请求类型
+									success:function(data){
+										mui.toast(data.msg);
+									},
+									error:function(e){
+										mui.alert("网络错误，请重试");
+									}
+								});
+							});
+						}
+					},
+					error: function(e) {
+						mui.alert("网络错误，请重试");
+					}
+				});
+			}else{//不是名片
+				var str = `
+					<div class="mui-card">
+						<div class="mui-card-content">
+							<div class="mui-card-content-inner info">
+								`+res+`
+							</div>
+						</div>
+					</div>
+				`;
+				mui("#res")[0].innerHTML = str;
+			}
+
+		});
+	</script>
+
+</html>

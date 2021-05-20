@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<style>
+			.title {
+				margin: 20px 15px 10px;
+				color: #6d6d72;
+				font-size: 15px;
+			}
+			.mui-media-body p{
+				width: 80%;
+			}
+			.title-logo-man{
+				color: #fff;
+				background-color: #FF9933;
+				font-size: 12px;
+			}
+			.title-logo-user{
+				color: #fff;
+				background-color: #0099FF;
+				font-size: 12px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">群成员</h1>
+			<a id="addGroupUser">
+				<img src="../../icon/add.png" style="width: 25px;height: 25px;margin-top: 10px;" class="mui-pull-right">
+			</a>
+		</header>
+		<div class="mui-content">
+			<!-- <div class="mui-content-padded" style="margin: 5px;margin-top: 10px;">
+				<div id="searchStyle" class="mui-input-row mui-search">
+					<input id="search" type="search" class="mui-input-clear" placeholder="">
+				</div>
+			</div> -->
+			<ul id="results" class="mui-table-view" style="margin-top: 0px;">
+				<!-- <li class="mui-table-view-cell mui-media">
+					<a href="javascript:;">
+						<img class="mui-media-object mui-pull-left" src="../../images/shuijiao.jpg">
+						<div class="mui-media-body">
+							幸福
+							<p class='mui-ellipsis'>能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</p>
+						</div>
+						<div class="mui-btn mui-btn-danger">
+							移除
+						</div>
+					</a>
+				</li> -->
+			</ul>
+		</div>
+
+	</body>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/APP.js"></script>
+	<script>
+		mui.init({
+			swipeBack:true //启用右滑关闭功能
+		});
+		
+		mui.plusReady(function () {
+		    var self = plus.webview.currentWebview();
+			
+			mui("#addGroupUser")[0].addEventListener('tap', function() {
+				mui.openWindow({url:'addGroupUser.html',
+					id : "addGroupUser",
+					extras:{
+						groupId : self.groupId
+					},
+				});
+			});
+			window.ShowGroupUser = {
+				//显示好友
+				showGroupUsers : function(){
+					var wt = plus.nativeUI.showWaiting("获取结果中...", {loading:{display:"inline"}});
+					mui.ajax(APP.serverURL + "/group/getGroupUsers",{
+						data:{
+							groupId : self.groupId
+						},
+						dataType:'json',//服务器返回json格式数据
+						type:'get',//HTTP请求类型
+						success:function(data){
+							var users = data.extend.data;
+							if(users.length <= 0){
+								noResults();
+							}else{
+								var str = "";
+								mui.each(users,function(index,item){
+									var title = "";
+									var showClass = "";
+									if(item.groupRole == 0){
+										title = "群主";
+										showClass = "title-logo-man";
+									}else if(item.groupRole == 1){
+										title = "管理员";
+										showClass = "title-logo-man";
+									}else{
+										title = "群成员";
+										showClass = "title-logo-user";
+									}
+									str += `
+										<li class="mui-table-view-cell mui-media">
+											<a href="javascript:;">
+												<img class="mui-media-object mui-pull-left" src="`+(APP.imageURL+"/userImage/"+item.userInfo.userImage)+`">
+												<div class="mui-media-body">
+													`+(item.userInfo.userName)+`&nbsp;&nbsp;<span class="`+showClass+`">`+title+`</span>
+													<p class='mui-ellipsis'>账号:`+(item.userInfo.account)+`</p>
+												</div>`;
+									if(self.role != 2){
+										if(item.userInfo.account != APP.getUserInfo().account){
+											if(item.groupRole > self.role){//mui-icon mui-icon-closeempty
+												if(self.role == 0){
+													if(item.groupRole == 1){
+														str += `
+															<button id-id="`+(item.id)+`" id-role="2" type="button" class="mui-btn mui-btn-success mui-btn-outlined setGroupMan" style="margin-right: 50px;">
+																<span class="mui-icon mui-icon-closeempty"></span>
+															</button>
+														`;
+													}else{
+														str += `
+															<button id-id="`+(item.id)+`" id-role="1" type="button" class="mui-btn mui-btn-success mui-btn-outlined setGroupMan" style="margin-right: 50px;">
+																<span class="mui-icon mui-icon-plus"></span>
+															</button>
+														`;
+													}
+													str += `
+														<button id-id="`+(item.id)+`" type="button" class="mui-btn mui-btn-danger mui-btn-outlined accounts">
+														    <span class="mui-icon mui-icon-trash"></span>
+														</button>
+													`;
+												}else{
+													str += `
+														<button id-id="`+(item.id)+`" type="button" class="mui-btn mui-btn-danger mui-btn-outlined accounts">
+														    <span class="mui-icon mui-icon-trash"></span>
+														</button>
+													`;
+												}
+											}
+										}
+									}
+									str += `</a>
+										</li>
+									`;
+								});
+								mui("#results")[0].innerHTML = str;
+								mui("#results").on('tap', '.setGroupMan', function() {
+									mui.ajax(APP.serverURL + "/group/updateGroupUser",{
+										data:{
+											id : this.getAttribute("id-id"),
+											role : this.getAttribute("id-role")
+										},
+										dataType:'json',//服务器返回json格式数据
+										type:'post',//HTTP请求类型
+										success:function(data){
+											mui.toast(data.msg);
+											ShowGroupUser.showGroupUsers();
+										},
+										error:function(e){
+											mui.alert("网络错误，请重试");
+										}
+									});
+								});
+								mui("#results").on('tap', '.accounts', function() {
+									var results = this;
+									var btnArray = ['否', '是'];
+									mui.confirm('确认将该成员移出群聊吗？', '', btnArray, function(e) {
+										if (e.index == 1) {
+											mui.ajax(APP.serverURL + "/group/delGroupUser",{
+												data:{
+													id : results.getAttribute("id-id")
+												},
+												dataType:'json',//服务器返回json格式数据
+												type:'post',//HTTP请求类型
+												success:function(data){
+													mui.toast(data.msg);
+													ShowGroupUser.showGroupUsers();
+												},
+												error:function(e){
+													mui.alert("网络错误，请重试");
+												}
+											});
+										}
+									});
+								});
+							}
+							wt.close();
+						},
+						error:function(e){
+							wt.close();
+							mui.alert("网络错误，请重试");
+						}
+					});
+				}
+			}
+			
+			ShowGroupUser.showGroupUsers();
+			
+			function noResults(){
+				var str = `
+					<li class="mui-table-view-cell mui-media" style="text-align: center;">
+						<a href="javascript:;">
+							<div class="mui-media-body" style="margin-top: 8px;">
+								没有成员！
+							</div>
+						</a>
+					</li>
+				`;
+				mui("#results")[0].innerHTML = str;
+			}
+		})
+		
+	</script>
+</html>

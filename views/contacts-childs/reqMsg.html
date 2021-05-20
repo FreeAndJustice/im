@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<style>
+			.title {
+				margin: 20px 15px 10px;
+				color: #6d6d72;
+				font-size: 15px;
+			}
+			.mui-media-body p{
+				width: 60%;
+			}
+			.refuse-btn{
+				margin-right: 60px;
+			}
+			.refuse-group{
+				margin-right: 60px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">验证消息</h1>
+		</header>
+		<div class="mui-content">
+			<div id="slider" class="mui-slider mui-fullscreen" style="margin-top: 0px;">
+				<div id="sliderSegmentedControl" class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+					<a class="mui-control-item" href="#item1mobile">
+						好友
+						<span id="friendUnreadNum" class="mui-badge mui-badge-danger mui-hidden">0</span>
+					</a>
+					<a class="mui-control-item" href="#item2mobile">
+						群聊
+						<span id="groupUnreadNum" class="mui-badge mui-badge-danger mui-hidden">0</span>
+					</a>
+				</div>
+				<div id="sliderProgressBar" class="mui-slider-progress-bar mui-col-xs-6"></div>
+				<div class="mui-slider-group">
+					<div id="item1mobile" class="mui-slider-item mui-control-content mui-active">
+						<ul id="results" class="mui-table-view">
+							<!-- <li class="mui-table-view-cell mui-media">
+								<a href="javascript:;">
+									<img class="mui-media-object mui-pull-left" src="../../images/shuijiao.jpg">
+									<div class="mui-media-body">
+										幸福
+										<p class='mui-ellipsis'>能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</p>
+									</div>
+									<div class="mui-btn mui-btn-success">
+										同意
+									</div>
+									<div class="mui-btn mui-btn-danger refuse-btn" >
+										拒绝
+									</div>
+								</a>
+							</li>
+							<li class="mui-table-view-cell mui-media">
+								<a href="javascript:;">
+									<img class="mui-media-object mui-pull-left" src="../../images/shuijiao.jpg">
+									<div class="mui-media-body">
+										幸福
+										<p class='mui-ellipsis'>能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</p>
+									</div>
+									<button type="button" class="mui-btn" disabled="true">
+										已同意
+									</button>
+								</a>
+							</li> -->
+							<!-- <li class="mui-table-view-cell mui-media" style="text-align: center;">
+								<a href="javascript:;">
+									<div class="mui-media-body" style="margin-top: 8px;">
+										查找结果为空！
+									</div>
+								</a>
+							</li> -->
+						</ul>
+					</div>
+					<div id="item2mobile" class="mui-slider-item mui-control-content">
+						<ul id="groups" class="mui-table-view">
+							<!-- <li class="mui-table-view-cell mui-media">
+								<a href="javascript:;">
+									<img class="mui-media-object mui-pull-left" src="../../images/shuijiao.jpg">
+									<div class="mui-media-body">
+										幸福
+										<p class='mui-ellipsis'>能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</p>
+									</div>
+									<div class="mui-btn mui-btn-success">
+										同意
+									</div>
+									<div class="mui-btn mui-btn-danger refuse-btn" >
+										拒绝
+									</div>
+								</a>
+							</li>
+							<li class="mui-table-view-cell mui-media">
+								<a href="javascript:;">
+									<img class="mui-media-object mui-pull-left" src="../../images/shuijiao.jpg">
+									<div class="mui-media-body">
+										幸福
+										<p class='mui-ellipsis'>能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</p>
+									</div>
+									<button type="button" class="mui-btn" disabled="true">
+										已同意
+									</button>
+								</a>
+							</li> -->
+							<!-- <li class="mui-table-view-cell mui-media" style="text-align: center;">
+								<a href="javascript:;">
+									<div class="mui-media-body" style="margin-top: 8px;">
+										查找结果为空！
+									</div>
+								</a>
+							</li> -->
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</body>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/APP.js"></script>
+	<script>
+		mui.init({
+			swipeBack:true //启用右滑关闭功能
+		});
+		
+		mui.plusReady(function () {
+			
+			window.ReqMsg = {
+				setUnreadMsgNum : function(type,number){
+					var obj = mui("#friendUnreadNum")[0];
+					if(type == "group"){
+						obj = mui("#groupUnreadNum")[0];
+					}
+					var num = parseInt(obj.innerHTML);
+					if(number == -1){
+						if(num <= 0){
+							num = 0;
+						}else{
+							num = num + 1;
+						}
+					}else{
+						num = number;
+					}
+					obj.classList.remove("mui-hidden");
+					if(num < 100){
+						obj.innerHTML = num;
+					}else{
+						obj.innerHTML = "99+";
+					}
+				}
+			}
+			
+			var wt = plus.nativeUI.showWaiting("获取结果中...", {loading:{display:"inline"}});
+			getReqMsg();
+			getGroupReqMsg();
+			wt.close();
+			//好友申请
+			function getReqMsg(){
+				mui.ajax(APP.serverURL + "/msgRecord/getMyReqMsg",{
+					data:{
+						account : APP.getUserInfo().account
+					},
+					dataType:'json',//服务器返回json格式数据
+					type:'get',//HTTP请求类型
+					async :false,
+					success:function(data){
+						var msgs = data.extend.data;
+						if(msgs.length <= 0){
+							noResults();
+						}else{
+							var str = "";
+							var num = 0;
+							mui.each(msgs,function(index,item){
+								str += `
+									<li class="mui-table-view-cell mui-media">
+										<a href="javascript:;">
+											<img class="mui-media-object mui-pull-left" src="`+(APP.imageURL+"/userImage/"+item.userInfo.userImage)+`">
+											<div class="mui-media-body">
+												`+(item.userInfo.userName)+`(`+(item.userInfo.account)+`)
+												<p class='mui-ellipsis'>请求添加你为好友</p>
+											</div>
+									`;
+								if(item.msgState == 0){
+									num ++;
+									str += `<div id-id="`+(item.id)+`" id-account="`+(item.userInfo.account)+`" class="mui-btn mui-btn-success accounts">
+												同意
+											</div>
+											<div id-account="`+(item.id)+`" class="mui-btn mui-btn-danger refuse-btn" >
+												拒绝
+											</div>
+										</a>
+									</li>
+								`;
+								}else if(item.msgState == 2){
+									str += `<button type="button" class="mui-btn" disabled="true">
+												已同意
+											</button>
+											</a>
+										</li>
+									`;
+								}else if(item.msgState == 3){
+									str += `<button type="button" class="mui-btn" disabled="true">
+												已拒绝
+											</button>
+											</a>
+										</li>
+									`;
+								}
+							});
+							if(num > 0){
+								ReqMsg.setUnreadMsgNum("friend",num);
+							}else{
+								var obj = mui("#friendUnreadNum")[0];
+								obj.innerHTML = 0;
+								obj.classList.remove("mui-hidden");
+								obj.classList.add("mui-hidden");
+							}
+							mui("#results")[0].innerHTML = str;
+							mui("#results").on('tap', '.accounts', function() {
+								mui.ajax(APP.serverURL + "/friends/addFriend",{
+									data:{
+										myAccount : APP.getUserInfo().account,
+										friendAccount : this.getAttribute("id-account"),
+										id : this.getAttribute("id-id")
+									},
+									dataType:'json',//服务器返回json格式数据
+									type:'post',//HTTP请求类型
+									success:function(data){
+										if(data.code == 100){
+											var obj = plus.webview.getWebviewById("contacts.html");
+											obj.evalJS('CONTACTS.showFriends()'); 
+											mui.toast("添加成功");
+										}else{
+											mui.toast("操作失败");
+										}
+										getReqMsg();
+									},
+									error:function(e){
+										mui.alert("网络错误，请重试");
+									}
+								});
+							});
+							mui("#results").on('tap', '.refuse-btn', function() {
+								mui.ajax(APP.serverURL + "/msgRecord/updateMyReqMsgState",{
+									data:{
+										id : this.getAttribute("id-account")
+									},
+									dataType:'json',//服务器返回json格式数据
+									type:'post',//HTTP请求类型
+									success:function(data){
+										if(data.code == 100){
+											mui.toast("操作成功");
+										}else{
+											mui.toast("操作失败");
+										}
+										getReqMsg();
+									},
+									error:function(e){
+										mui.alert("网络错误，请重试");
+									}
+								});
+							});
+						}
+					},
+					error:function(e){
+						wt.close();
+						mui.alert("网络错误，请重试");
+					}
+				});
+			}
+			
+			function getGroupReqMsg(){
+				mui.ajax(APP.serverURL + "/msgRecord/getMyGroupReqMsg",{
+					data:{
+						account : APP.getUserInfo().account
+					},
+					dataType:'json',//服务器返回json格式数据
+					type:'get',//HTTP请求类型
+					async :false,
+					success:function(data){
+						var msgs = data.extend.data;
+						if(msgs.length <= 0){
+							var str = `
+								<li class="mui-table-view-cell mui-media" style="text-align: center;">
+									<a href="javascript:;">
+										<div class="mui-media-body" style="margin-top: 8px;">
+											暂无消息！
+										</div>
+									</a>
+								</li>
+							`;
+							mui("#groups")[0].innerHTML = str;
+						}else{
+							var str = "";
+							var num = 0;
+							mui.each(msgs,function(index,item){
+								str += `
+									<li class="mui-table-view-cell mui-media">
+										<a href="javascript:;">
+											<img class="mui-media-object mui-pull-left" src="`+(APP.imageURL+"/userImage/"+item.userInfo.userImage)+`">
+											<div class="mui-media-body">
+												`+(item.userInfo.userName)+`(`+(item.userInfo.account)+`)
+												<p class='mui-ellipsis'>申请加入群聊(`+(item.groupChat.groupName)+`)</p>
+											</div>
+									`;
+								if(item.msgState == 0){
+									num ++;
+									str += `<div id-id="`+(item.id)+`" id-groupId="`+(item.toAccount)+`" id-account="`+(item.userInfo.account)+`" class="mui-btn mui-btn-success agree-group">
+												同意
+											</div>
+											<div id-account="`+(item.id)+`" class="mui-btn mui-btn-danger refuse-group" >
+												拒绝
+											</div>
+										</a>
+									</li>
+								`;
+								}else if(item.msgState == 2){
+									str += `<button type="button" class="mui-btn" disabled="true">
+												已同意
+											</button>
+											</a>
+										</li>
+									`;
+								}else if(item.msgState == 3){
+									str += `<button type="button" class="mui-btn" disabled="true">
+												已拒绝
+											</button>
+											</a>
+										</li>
+									`;
+								}
+							});
+							if(num > 0){
+								ReqMsg.setUnreadMsgNum("group",num);
+							}
+							mui("#groups")[0].innerHTML = str;
+							mui("#groups").on('tap', '.agree-group', function() {
+								mui.ajax(APP.serverURL + "/group/agreeUserForGroup",{
+									data:{
+										account : this.getAttribute("id-account"),
+										groupId : this.getAttribute("id-groupId"),
+										id : this.getAttribute("id-id")
+									},
+									dataType:'json',//服务器返回json格式数据
+									type:'post',//HTTP请求类型
+									success:function(data){
+										if(data.code == 100){
+											mui.toast("添加成功");
+										}else{
+											mui.toast("操作失败");
+										}
+										getGroupReqMsg();
+									},
+									error:function(e){
+										mui.alert("网络错误，请重试");
+									}
+								});
+							});
+							mui("#groups").on('tap', '.refuse-group', function() {
+								mui.ajax(APP.serverURL + "/msgRecord/updateMyReqMsgState",{
+									data:{
+										id : this.getAttribute("id-account")
+									},
+									dataType:'json',//服务器返回json格式数据
+									type:'post',//HTTP请求类型
+									success:function(data){
+										if(data.code == 100){
+											mui.toast("操作成功");
+										}else{
+											mui.toast("操作失败");
+										}
+										getGroupReqMsg();
+									}, 
+									error:function(e){
+										mui.alert("网络错误，请重试");
+									}
+								});
+							});
+						}
+					},
+					error:function(e){
+						wt.close();
+						mui.alert("网络错误，请重试");
+					}
+				});
+			}
+			
+			function noResults(){
+				var str = `
+					<li class="mui-table-view-cell mui-media" style="text-align: center;">
+						<a href="javascript:;">
+							<div class="mui-media-body" style="margin-top: 8px;">
+								暂无消息！
+							</div>
+						</a>
+					</li>
+				`;
+				mui("#results")[0].innerHTML = str;
+			}
+		})
+		
+	</script>
+</html>

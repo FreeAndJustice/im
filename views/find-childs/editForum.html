@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<style>
+			html,
+			body {
+				background-color: #efeff4;
+			}
+
+			.mui-views,
+			.mui-view,
+			.mui-pages,
+			.mui-page,
+			.mui-page-content {
+				position: absolute;
+				left: 0;
+				right: 0;
+				top: 0;
+				bottom: 0;
+				width: 100%;
+				height: 100%;
+				background-color: #efeff4;
+			}
+
+			.mui-pages {
+				top: 46px;
+				height: auto;
+			}
+
+			.mui-scroll-wrapper,
+			.mui-scroll {
+				background-color: #efeff4;
+			}
+
+			.mui-page.mui-transitioning {
+				-webkit-transition: -webkit-transform 300ms ease;
+				transition: transform 300ms ease;
+			}
+
+			.mui-page-left {
+				-webkit-transform: translate3d(0, 0, 0);
+				transform: translate3d(0, 0, 0);
+			}
+
+			.mui-ios .mui-page-left {
+				-webkit-transform: translate3d(-20%, 0, 0);
+				transform: translate3d(-20%, 0, 0);
+			}
+
+			.mui-navbar {
+				position: fixed;
+				right: 0;
+				left: 0;
+				z-index: 10;
+				height: 44px;
+				background-color: #f7f7f8;
+			}
+
+			.mui-navbar .mui-bar {
+				position: absolute;
+				background: transparent;
+				text-align: center;
+			}
+
+			.mui-android .mui-navbar-inner.mui-navbar-left {
+				opacity: 0;
+			}
+
+			.mui-ios .mui-navbar-left .mui-left,
+			.mui-ios .mui-navbar-left .mui-center,
+			.mui-ios .mui-navbar-left .mui-right {
+				opacity: 0;
+			}
+
+			.mui-navbar .mui-btn-nav {
+				-webkit-transition: none;
+				transition: none;
+				-webkit-transition-duration: .0s;
+				transition-duration: .0s;
+			}
+
+			.mui-navbar .mui-bar .mui-title {
+				display: inline-block;
+				width: auto;
+			}
+
+			.mui-page-shadow {
+				position: absolute;
+				right: 100%;
+				top: 0;
+				width: 16px;
+				height: 100%;
+				z-index: -1;
+				content: '';
+			}
+
+			.mui-page-shadow {
+				background: -webkit-linear-gradient(left, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, .01) 50%, rgba(0, 0, 0, .2) 100%);
+				background: linear-gradient(to right, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, .01) 50%, rgba(0, 0, 0, .2) 100%);
+			}
+
+			.mui-navbar-inner.mui-transitioning,
+			.mui-navbar-inner .mui-transitioning {
+				-webkit-transition: opacity 300ms ease, -webkit-transform 300ms ease;
+				transition: opacity 300ms ease, transform 300ms ease;
+			}
+
+			.mui-page {
+				display: none;
+			}
+
+			.mui-pages .mui-page {
+				display: block;
+			}
+
+			.mui-page .mui-table-view:first-child {
+				margin-top: 15px;
+			}
+
+			.mui-page .mui-table-view:last-child {
+				margin-bottom: 30px;
+			}
+
+			.mui-table-view {
+				margin-top: 20px;
+			}
+
+			.mui-table-view span.mui-pull-right {
+				color: #999;
+			}
+
+			.mui-table-view-divider {
+				background-color: #efeff4;
+				font-size: 14px;
+			}
+
+			.mui-table-view-divider:before,
+			.mui-table-view-divider:after {
+				height: 0;
+			}
+
+			.head {
+				height: 40px;
+			}
+
+			#head {
+				line-height: 40px;
+			}
+
+			.head-img {
+				width: 40px;
+				height: 40px;
+			}
+
+			#head-img1 {
+				position: absolute;
+				bottom: 10px;
+				right: 40px;
+				width: 40px;
+				height: 40px;
+			}
+
+			.update {
+				font-style: normal;
+				color: #999999;
+				margin-right: -25px;
+				font-size: 15px
+			}
+
+			.mui-fullscreen {
+				position: fixed;
+				z-index: 20;
+				background-color: #000;
+			}
+
+			.mui-ios .mui-navbar .mui-bar .mui-title {
+				position: static;
+			}
+
+			/*问题反馈在setting页面单独的css*/
+			#feedback .mui-popover {
+				position: fixed;
+			}
+
+			#feedback .mui-table-view:last-child {
+				margin-bottom: 0px;
+			}
+
+			#feedback .mui-table-view:first-child {
+				margin-top: 0px;
+			}
+
+			.mui-plus.mui-plus-stream .mui-stream-hidden {
+				display: none !important;
+			}
+
+			/*问题反馈在setting页面单独的css==end*/
+		</style>
+		<link rel="stylesheet" type="text/css" href="../../css/feedback.css" />
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">发布动态</h1>
+			<img id="sendMyForum" src="../../icon/send.png" style="width: 20px;height: 20px;margin-top: 12px;" class="mui-pull-right">
+		</header>
+		<div class="mui-content feedback">
+			<div class="mui-input-row" style="margin: 10px 2px;">
+				<textarea id="textarea" rows="5" placeholder="此刻的心情..."></textarea>
+			</div>
+
+			<div id='image-list' class="row image-list">
+				<div class="image-item space" id="click_add_image">
+					<div class="image-up"></div>
+				</div>
+				<!-- <div class="image-item" style="background-image: url(../../images/muwu.jpg);">
+					<div class="image-close">X</div>
+				</div> -->
+			</div>
+		</div>
+
+	</body>
+	<script src="../../js/mui.min.js "></script>
+	<script src="../../js/mui.view.js "></script>
+	<script src="../../js/APP.js"></script>
+	<script>
+		mui.init({
+			beforeback: function() {
+				var list = plus.webview.currentWebview().opener();
+				//refresh是A页面自定义事件
+				mui.fire(list, 'refresh');
+				//返回true,继续页面关闭逻辑
+				return true;
+			}
+		});
+		(function() {
+			var imageIndexIdNum = 0;
+			var imgMaxNum = 9;//图片可选择的最大数量
+			var feedback = {
+				imageList: document.getElementById('image-list'),
+				submitBtn: document.getElementById('sendMyForum'),
+				clickAddImage: document.getElementById('click_add_image')
+			};
+			feedback.files = [];
+			feedback.deviceInfo = null;
+			mui.plusReady(function() {
+				//设备信息，无需修改
+				feedback.deviceInfo = {
+					appid: plus.runtime.appid,
+					imei: plus.device.imei, //设备标识
+					images: feedback.files, //图片文件
+					p: mui.os.android ? 'a' : 'i', //平台类型，i表示iOS平台，a表示Android平台。
+					md: plus.device.model, //设备型号
+					app_version: plus.runtime.version,
+					plus_version: plus.runtime.innerVersion, //基座版本号
+					os: mui.os.version,
+					net: '' + plus.networkinfo.getCurrentType()
+				}
+			});
+			/**
+			 *表单初始化 
+			 */
+			feedback.clearForm = function() {
+				window.location.reload();
+				// document.getElementById("textarea").value = "";
+				// feedback.imageList.innerHTML = `
+				// 	<div class="image-item space" id="click_add_image">
+				// 		<div class="image-up"></div>
+				// 	</div>
+				// `;
+				// feedback.files = [];
+				// imageIndexIdNum = 0;
+				// //清除所有星标
+				// mui('.icons i').each(function(index, element) {
+				// 	if (element.classList.contains('mui-icon-star-filled')) {
+				// 		element.classList.add('mui-icon-star')
+				// 		element.classList.remove('mui-icon-star-filled')
+				// 	}
+				// })
+			};
+			/**
+			 * 添加图片点击
+			 * @param {Object} event
+			 */
+			feedback.clickAddImage.addEventListener('tap', function(event) {
+				if (feedback.files.length >= imgMaxNum) {
+					mui.toast("最多选择九张图片");
+					return;
+				}
+				if (mui.os.plus) {
+					var a = [{
+						title: "拍照"
+					}, {
+						title: "从手机相册选择"
+					}];
+					plus.nativeUI.actionSheet({
+						title: "添加图片",
+						cancel: "取消",
+						buttons: a
+					}, function(b) {
+						switch (b.index) {
+							case 0:
+								break;
+							case 1://相机
+								var c = plus.camera.getCamera();
+								c.captureImage(function(e) {
+									plus.io.resolveLocalFileSystemURL(e, function(entry) {
+										var imgSrc = entry.toLocalURL(); //拿到图片路径 
+										feedback.showChooseImage(imgSrc);
+										feedback.addFile(imgSrc);
+									}, function(e) {
+										console.log("读取拍照文件错误：" + e.message);
+									});
+								}, function(s) {
+									console.log("error" + s);
+								}, {
+									filename: "_doc/camera" + new Date().getTime()
+								});
+								break;
+							case 2://相册
+								plus.gallery.pick(function(e) {
+									mui.each(e.files, function(num, item) {
+										feedback.showChooseImage(item);
+										feedback.addFile(item);
+									});
+								}, function(a) {}, {
+									filter: "image",
+									multiple: true,
+									maximum: imgMaxNum - feedback.files.length,
+									system: false,
+									onmaxed: function() {
+										mui.toast('最多只能选择'+imgMaxNum+'张图片');
+									}
+								});
+								break;
+							default:
+								break
+						}
+					});
+				}
+			});
+			//将选择的图片显示
+			feedback.showChooseImage = function(imgPath) {
+				var placeholder = document.createElement('div');
+				placeholder.setAttribute('class', 'image-item');
+				placeholder.style.backgroundImage = 'url(' + imgPath + ')';
+				/**
+				 * 取消图片的红叉
+				 */
+				var closeButton = document.createElement('div');
+				closeButton.setAttribute('class', 'image-close');
+				closeButton.innerHTML = 'X';
+				closeButton.id = "img-" + imageIndexIdNum;
+				//小X的点击事件
+				closeButton.addEventListener('tap', function(event) {
+					setTimeout(function() {
+						mui.each(feedback.files, function(num, item) {
+							if (item.id == closeButton.id) {
+								feedback.files.pop(item);
+							}
+						});
+						feedback.imageList.removeChild(placeholder);
+					}, 0);
+					return false;
+				}, false);
+				placeholder.appendChild(closeButton);
+				feedback.imageList.appendChild(placeholder);
+			};
+			/**
+			 * 文件保存到数组
+			 * @param {Object} path
+			 */
+			feedback.addFile = function(path) {
+				feedback.files.push({
+					name: "images" + imageIndexIdNum,
+					path: path,
+					id: "img-" + imageIndexIdNum
+				});
+				imageIndexIdNum++;
+			};
+			/**
+			 * 提交按钮
+			 * @param {Object} event
+			 */
+			feedback.submitBtn.addEventListener('tap', function(event) {
+				//判断网络连接
+				if (plus.networkinfo.getCurrentType() == plus.networkinfo.CONNECTION_NONE) {
+					return mui.toast("连接网络失败，请稍后再试");
+				}
+				var context = document.getElementById("textarea").value;
+				if (context == "" && feedback.files.length == 0) {
+					mui.toast("请输入文字或添加图片");
+					return;
+				}
+				var wt = plus.nativeUI.showWaiting();
+				mui.ajax(APP.serverURL + "/circle/addCircle", {
+					data: {
+						account: APP.getUserInfo().account,
+						context: context
+					},
+					dataType: 'json', //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					success: function(data) {
+						if (data.code == 100) {
+							if(feedback.files.length == 0){//没有选择文件不进行上传
+								wt.close();
+								mui.toast("发布成功");
+								feedback.clearForm();
+								APP.setIsReloadIndex(true);
+								mui.back();
+								return;
+							}
+							var imageNames = "";
+							var circleId = data.extend.circleId;
+							var task = plus.uploader.createUpload(APP.serverURL + "/uploadFiles", {
+									method: "POST",
+									priority: 100,
+								},
+								function(t, status) {
+									if (APP.analysisUpload(t).flag) {
+										imageNames += APP.analysisUpload(t).fileName + "@";
+										if (imageNames != "") {
+											imageNames = imageNames.substring(0, imageNames.length - 1);
+										}
+										mui.ajax(APP.serverURL + "/circle/addCircleImages", {
+											data: {
+												circleId: circleId,
+												imageNames: imageNames
+											},
+											dataType: 'json', //服务器返回json格式数据
+											type: 'post', //HTTP请求类型
+											success: function(data) {
+												if (data.code == 100) {
+													feedback.clearForm();
+													APP.setIsReloadIndex(true);
+													mui.back();
+												}
+												mui.toast(data.msg);
+											},
+											error: function(e) {
+												mui.alert("网络错误，请重试");
+											}
+										});
+										wt.close();
+									}
+								}
+							);
+							mui.each(feedback.files, function(num, item) {
+								task.addFile(item.path, {
+									key: "file" + num,
+								});
+							});
+							task.addData("path", "circleImage");
+							task.addData("uid", Math.floor(Math.random() * 100000000 + 10000000).toString());
+							task.addData("account", APP.getUserInfo().account);
+							task.start();
+						} else {
+							mui.toast(data.msg);
+						}
+					},
+					error: function(e) {
+						mui.alert("网络错误，请重试");
+					}
+				});
+			}, false);
+
+		})();
+	</script>
+
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<style>
+			.mui-badge1{
+				padding:0px; 
+				width:65%; 
+				float:right; 
+				line-height:42px; 
+				font-size:14px;
+			}
+			.line{
+				float:left;
+				width: 1px;
+				height: 40px; 
+				background: #a7a7a7;
+				margin-left: -20px;
+				margin-top: 0px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">备注和分组</h1>
+			<a id="submit" class="mui-btn mui-btn-link mui-pull-right mui-btn-blue">完成</a>
+		</header>
+		<div class="mui-content">
+			<div class="mui-input-row mui-text" style="margin-top: 10px;">
+				<input id="groupName" type="text" class="mui-input-text" placeholder="设置备注">
+			</div>
+
+			<div class="mui-input-group">
+				<div class="mui-input-row">
+					<label id="addGroupName">新增分组</label>
+					<div class="line"></div>
+					<a class="mui-navigate-right">
+						<span class="mui-badge1">
+							<select id="groups" class="mui-h5" style="margin:auto; color:#000;">
+								<!-- <option value="">全部</option>
+								<option value="1">津</option>
+								<option value="1">冀</option>
+								<option value="1">京</option>
+								<option value="1">津</option>
+								<option value="1">冀</option> -->
+							</select>
+						</span> 
+					</a>
+				</div>
+			</div>
+			<script src="../../js/mui.min.js"></script>
+			<script src="../../js/APP.js"></script>
+			<script type="text/javascript" charset="utf-8">
+				mui.init();
+				mui('.mui-scroll-wrapper').scroll({
+					bounce: false,
+				});
+				mui.plusReady(function() {
+					var self = plus.webview.currentWebview();
+					showMyGroups();
+					getFriendGroupInfo();
+					mui("#submit")[0].addEventListener('tap',function(){
+						mui.ajax(APP.serverURL + "/friends/updateMyGroup" , {
+							data: {
+								myAccount : APP.getUserInfo().account,
+								friendAccount : self.account,
+								friendName : mui("#groupName")[0].value,
+								friendGroup : mui("#groups")[0].value
+							},
+							dataType: 'json', //服务器返回json格式数据
+							type: 'post', //HTTP请求类型
+							success: function(data) {
+								if(data.code == 100){
+									var obj = plus.webview.getWebviewById("contacts.html");
+									obj.evalJS('CONTACTS.showFriends()');
+									getFriendGroupInfo();
+								}
+								mui.toast(data.msg);
+							},
+							error: function(e) {
+								mui.alert("网络错误，请重试");
+							}
+						});
+					});
+					
+					mui("#addGroupName")[0].addEventListener('tap',function(){
+						var btnArray = ['取消', '确定'];
+						mui.prompt('输入分组名称', "", '添加分组', btnArray, function(e) {
+							if (e.index == 1) {
+								if(e.value == ""){
+									mui.toast("分组名称不能为空");
+									return;
+								}
+								mui.ajax(APP.serverURL + "/group/addGroup" , {
+									data: {
+										account : APP.getUserInfo().account,
+										groupName: e.value
+									},
+									dataType: 'json', //服务器返回json格式数据
+									type: 'post', //HTTP请求类型
+									success: function(data) {
+										if(data.code == 100){
+											showMyGroups();
+										}
+										mui.toast(data.msg);
+									},
+									error: function(e) {
+										mui.alert("网络错误，请重试");
+									}
+								});
+							}
+						})
+					});
+					
+					/**
+					 * 好友元备注和分组显示
+					 */
+					function getFriendGroupInfo(){
+						mui.ajax(APP.serverURL + "/friends/getFriendGroupInfo", {
+							data: {
+								myAccount : APP.getUserInfo().account,
+								friendAccount : self.account,
+							},
+							dataType: 'json', //服务器返回json格式数据
+							type: 'get', //HTTP请求类型
+							async: false,
+							success: function(data) {
+								if(data.code == 100){
+									var group = data.extend.data;
+									if(group.friendName != null && group.friendName != ""){
+										mui("#groupName")[0].value = group.friendName;
+									}
+									if(group.friendGroup != null && group.friendGroup != -1){
+										mui("#groups")[0].value = group.friendGroup;
+									}
+								}
+							},
+							error: function(e) {
+								mui.alert("网络错误，请重试");
+							}
+						});
+					}
+					
+					//显示用户
+					function showMyGroups() {
+						mui.ajax(APP.serverURL + "/group/getGroups/" + APP.getUserInfo().account, {
+							data: {
+
+							},
+							dataType: 'json', //服务器返回json格式数据
+							type: 'get', //HTTP请求类型
+							async: false,
+							success: function(data) {
+								var myGroups = data.extend.data;
+								var str = "";
+								if(myGroups.length == 0){
+									str = '<option value="-1">暂无分组</option>';
+									mui("#groups")[0].innerHTML = str;
+								}else{
+									mui.each(myGroups,function(index,item){
+										str += `
+											<option value="`+(item.id)+`">`+(item.groupName)+`</option>
+										`;
+									});
+									mui("#groups")[0].innerHTML = str;
+								}
+								
+									
+							},
+							error: function(e) {
+								mui.alert("网络错误，请重试");
+							}
+						});
+					}
+				});
+			</script>
+	</body>
+
+</html>
