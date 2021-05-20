@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>注册</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="css/mui.min.css">
+		<!--App自定义的css-->
+		<!-- <link rel="stylesheet" type="text/css" href="../css/app.css" /> -->
+		<style>
+			h5 {
+				margin: 5px 7px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">注册</h1>
+		</header>
+		<div class="mui-content">  
+			<div class="mui-content-padded" style="margin: 5px;margin-top: 20px;">
+				<div class="mui-input-row mui-text">
+					<input id="account" type="text" class="mui-input-text" placeholder="输入账号">
+				</div>
+				<div class="mui-input-row mui-password">
+					<input id="password" type="password" class="mui-input-password" placeholder="输入密码">
+				</div>
+				<div class="mui-input-row mui-text">
+					<input id="userName" type="text" class="mui-input-text" placeholder="输入用户名">
+				</div>
+				<br />
+				<button id="btn-register" type="button" class="mui-btn mui-btn-success mui-btn-block mui-btn-outlined" style="height: 40px;line-height: 10px;">注册</button>
+			</div>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script src="js/APP.js"></script>
+		<script>
+			mui.plusReady(function() {
+				document.getElementById("btn-register").addEventListener('tap', function() {
+					var account = mui("#account")[0].value;
+					if(account == ""){
+						mui.toast("账号不能为空");
+						return;
+					}
+					var password = mui("#password")[0].value;
+					if(password == ""){
+						mui.toast("密码不能为空");
+						return;
+					}
+					var userName = mui("#userName")[0].value;
+					var wt = plus.nativeUI.showWaiting("正在注册...", {loading:{display:"inline"}});
+					mui.ajax(APP.serverURL + "/user/register",{
+						data:{
+							account : account,
+							password : password,
+							userName : userName
+						},
+						dataType:'json',//服务器返回json格式数据
+						type:'get',//HTTP请求类型
+ 						success:function(data){
+							if(data.code == 100){
+								mui.toast(data.msg);
+								mui.back();
+							}else{
+								mui.toast(data.msg);
+							}
+							wt.close();
+						},
+						error:function(e){
+							wt.close();
+							mui.alert("网络错误，请重试");
+						}
+					});
+				});
+			});
+		</script>
+	</body>
+
+</html>
