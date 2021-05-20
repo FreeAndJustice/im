@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>登录</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="css/mui.min.css">
+		<!--App自定义的css-->
+		<!-- <link rel="stylesheet" type="text/css" href="../css/app.css" /> -->
+		<style>
+			h5 {
+				margin: 5px 7px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<h1 class="mui-title">登录</h1>
+		</header>
+		<div class="mui-content">  
+			<div class="mui-content-padded" style="margin: 5px;margin-top: 20px;">
+				<div class="mui-input-row mui-text">
+					<input id="account" type="text" class="mui-input-text">
+				</div>
+				<div class="mui-input-row mui-password">
+					<input id="password" type="password" class="mui-input-password">
+				</div>
+				<h5 class="mui-pull-right" style="margin-top: -6px;">忘记密码?</h5>
+				<br />
+				<button id="btn_login" type="button" class="mui-btn mui-btn-primary mui-btn-block mui-btn-outlined" style="height: 40px;line-height: 10px;">登录</button>
+				<button id="btn-register" type="button" class="mui-btn mui-btn-success mui-btn-block mui-btn-outlined" style="height: 40px;line-height: 10px;">去注册</button>
+			</div>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script src="js/APP.js"></script>
+		<script>
+			mui.plusReady(function() {
+				mui("#btn-register")[0].addEventListener('tap',function(){
+					mui.openWindow({url:'register.html',
+						id : "index",
+						extras:{id:'100'},
+					});
+				});
+				document.getElementById("btn_login").addEventListener('tap', function() {
+					var account = document.getElementById("account").value;
+					if(account == ""){
+						mui.toast("账号不能为空");
+						return;
+					}
+					var password = document.getElementById("password").value;
+					if(password == ""){
+						mui.toast("密码不能为空");
+						return;
+					}
+					var wt = plus.nativeUI.showWaiting("正在登录...", {loading:{display:"inline"}});
+					mui.ajax(APP.serverURL + "/user/login",{
+						data:{
+							account : account,
+							password : password
+						},
+						dataType:'json',//服务器返回json格式数据
+						type:'get',//HTTP请求类型
+ 						success:function(data){
+							if(data.code == 100){
+								APP.setUserInfo(data.extend.userInfo);
+								mui.openWindow({url:'index.html',
+									id : "index",
+									extras:{id:'100'},
+								});
+							}else{
+								mui.toast(data.msg);
+							}
+							wt.close();
+						},
+						error:function(e){
+							wt.close();
+							mui.alert("网络错误，请重试");
+						}
+					});
+				});
+			});
+		</script>
+	</body>
+
+</html>

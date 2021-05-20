@@ -1,0 +1,123 @@
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="css/icons-extra.css" />
+	<link rel="stylesheet" href="css/mui.css" type="text/css" charset="utf-8" />
+	<style type="text/css">
+		html {
+			width: 100%;
+			height: 100%;
+		}
+
+		body {
+			height: 100%;
+			background-color: transparent;
+		}
+
+		.mui-popover .mui-popover-arrow {
+			left: auto;
+			right: 10px !important;
+		}
+
+		.mui-popover {
+			display: block;
+			width: auto;
+			opacity: 1;
+			text-align: center;
+		}
+
+		.mui-table-view-cell {
+			color: #000;
+		}
+	</style>
+</head>
+
+<body>
+	<a style="display: block;height: 100%; background:url(../img/mask.png);"></a>
+	<div id="topPopover" class="mui-popover" style="position:fixed ;top: 60px;right:5px;">
+		<div class="mui-popover-arrow" style="top: -30px;"></div>
+		<ul class="mui-table-view" style="color: #fff; top: 0px;right: 0;">
+			<li id="createGroup" class="mui-table-view-cell">
+				<span class="mui-icon-extra mui-icon-extra-peoples"></span>
+				&nbsp;创建群聊
+			</li>
+			<li id="addFriend" class="mui-table-view-cell">
+				<span class="mui-icon-extra mui-icon-extra-addpeople"></span>
+				&nbsp;添加好友
+			</li>
+			<li id="scanning" class="mui-table-view-cell">
+				<span class="mui-icon-extra mui-icon-extra-sweep"></span>
+				&nbsp;扫&nbsp;&nbsp;一&nbsp;&nbsp;扫
+			</li>
+		</ul>
+	</div>
+</body>
+<script src="js/mui.min.js"></script>
+<script src="js/APP.js"></script>
+<script type="text/javascript" src="js/common.js"></script>
+<script type="text/javascript">
+	mui.init({
+		preloadPages: [{
+			id: 'tab-webview-main.html',
+			url: 'tab-webview-main.html'
+		}]
+	});
+	mui.plusReady(function() {
+		window.addEventListener('qr', function(e) {
+			//获取参数值
+			var result = e.detail.result;
+			mui.openWindow({url:'views/qr/qrDetails.html',
+				id : "qrDetails",
+				extras:{
+					result : result,
+				},
+			});
+		});
+		ws = plus.webview.currentWebview();
+		ws.setStyle({
+			mask: "none"
+		});
+		window.addEventListener("tap", function() {
+			ws.hide();
+		});
+		window.addEventListener("dragstart", function() {
+			ws.hide();
+		});
+		mui("#createGroup")[0].addEventListener('tap', function() {
+			mui.openWindow({
+				url: 'views/create-group/createGroup.html',
+				id: "createGroup",
+				extras: {
+					id: '100'
+				},
+			});
+		});
+		mui("#addFriend")[0].addEventListener('tap', function() {
+			mui.openWindow({
+				url: 'views/add-friends/addFriends.html',
+				id: "addFriends",
+				extras: {
+					id: '100'
+				},
+			});
+		});
+		mui("#scanning")[0].addEventListener('tap', function() {
+			createWithoutTitle('views/qr/barcode_scan.html', {
+				titleNView: {
+					type: 'float',
+					backgroundColor: 'rgba(215,75,40,0.3)',
+					titleText: '扫一扫',
+					titleColor: '#FFFFFF',
+					autoBackButton: true,
+					buttons: [{
+						fontSrc: '_www/helloh5.ttf',
+						text: '相册',
+						fontSize: '16px',
+						onclick: 'javascript:scanPicture()'
+					}]
+				}
+			});
+		});
+	});
+</script>

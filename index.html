@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<img id="my_image" src="images/noImage.png" style="width: 28px;height: 28px;margin-top: 9px;" class="mui-pull-left">
+			<h1 class="mui-title title-color"><b id="header_title">消息</b></h1>
+			<a id="openMenu">
+				<img src="icon/settings.png" style="width: 25px;height: 25px;margin-top: 10px;" class="mui-pull-right">
+			</a>
+		</header>
+		<nav class="mui-bar mui-bar-tab">
+			<a class="mui-tab-item mui-active" tabindex="0">
+				<span class="mui-icon mui-icon-chatbubble"></span>
+				<span class="mui-tab-label">消息</span>
+			</a>
+			<a class="mui-tab-item" tabindex="1">
+				<span class="mui-icon mui-icon-phone"></span>
+				<span class="mui-tab-label">通讯录</span>
+			</a>
+			<a class="mui-tab-item" tabindex="2">
+				<span class="mui-icon mui-icon-paperplane"></span>
+				<span class="mui-tab-label">发现</span>
+			</a>
+			<!-- <a class="mui-tab-item" tabindex="3">
+				<span class="mui-icon mui-icon-person"></span>
+				<span class="mui-tab-label">云盘</span>
+			</a> -->
+		</nav>
+		<script src="js/mui.min.js"></script>
+		<script src="js/APP.js"></script>
+		<script type="text/javascript">
+			window.addEventListener('myImage', function(e) { //执行刷新
+				if (APP.getIsReloadIndex()) {
+					APP.setIsReloadIndex(false);
+					document.getElementById("my_image").src = APP.imageURL + "/userImage/" + APP.getUserInfo().userImage;
+				}
+			});
+			window.addEventListener('chatWin', function(e) { //执行刷新
+				if (APP.getIsReloadIndex()) {
+					APP.setIsReloadIndex(false);
+					plus.webview.getWebviewById("message.html").reload();
+					// location.reload();
+				}
+			});
+
+			var chatArray = [{
+					pageId: "message.html",
+					pageUrl: "views/main/message.html",
+					pageTitle: "消息"
+				},
+				{
+					pageId: "contacts.html",
+					pageUrl: "views/main/contacts.html",
+					pageTitle: "通讯录"
+				},
+				{
+					pageId: "discover.html",
+					pageUrl: "views/main/find.html",
+					pageTitle: "发现"
+				}/* ,
+				{
+					pageId: "setting.html",
+					pageUrl: "views/main/cloud.html",
+					pageTitle: "云盘"
+				} */
+			];
+			var pageStyle = {
+				top: "44px",
+				bottom: "50px"
+			}
+			mui.plusReady(function() {
+				document.getElementById("my_image").src = APP.imageURL + "/userImage/" + APP.getUserInfo().userImage;
+				var self = plus.webview.currentWebview();
+				var meun = plus.webview.create("indexMenu.html", "indexMenu.html", {
+					background: 'transparent',
+					zindex: 10,
+				});
+				document.getElementById("openMenu").addEventListener('tap', function() {
+					if(meun == null){
+						meun = plus.webview.create("indexMenu.html", "indexMenu.html", {
+							background: 'transparent',
+							zindex: 10,
+						});
+					}
+					meun.show();
+				});
+				// 重写mui back方法 使安卓手机的返回按钮对本页无效
+				var first = null;
+				mui.back = function() {
+					if (!first) {
+						first = new Date().getTime();
+						mui.toast('再按一次退出应用');
+						setTimeout(function() {
+							first = null;
+						}, 2000);
+					} else {
+						if (new Date().getTime() - first < 2000) {
+							plus.runtime.quit();
+						}
+					}
+				}
+				// 获取当前的webview对象
+				var indexWebView = plus.webview.currentWebview();
+				// 向当前的主页 追加四张html webview
+				for (var i = 0; i < chatArray.length; i++) {
+					var pageView = plus.webview.create(chatArray[i].pageUrl, chatArray[i].pageId, pageStyle);
+					pageView.hide();
+					// 追加子页面到当前主页面
+					indexWebView.append(pageView);
+				}
+				plus.webview.show(chatArray[0].pageId);
+				var header_title = document.getElementById("header_title");
+				// 批量绑定tap 展示不同的webview
+				mui(".mui-bar-tab").on('tap', 'a', function() {
+					var tabindex = this.getAttribute("tabindex");
+					plus.webview.show(chatArray[tabindex].pageId, "fade-in");
+					header_title.innerHTML = chatArray[tabindex].pageTitle;
+				});
+			});
+
+			document.getElementById("my_image").addEventListener('tap', function() {
+				mui.openWindow({
+					url: 'views/setting.html',
+					extras: {
+						id: '100'
+					}
+				})
+			});
+
+		</script>
+	</body>
+</html>
